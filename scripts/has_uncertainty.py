@@ -31,7 +31,7 @@ def has_uncertainty(root: str | Path) -> pd.DataFrame:
             if not f.endswith(".nc"):
                 continue
             df += check_dataset(sdir / f)
-    df = pd.DataFrame(df)
+    df = pd.DataFrame(df, columns=["dataset", "variable", "uncertainty"])
     for r, row in df.iterrows():
         df.loc[r, "dataset"] = row["dataset"].relative_to(root)  # type: ignore
     df.sort_values("dataset").reset_index(inplace=True)
@@ -39,4 +39,11 @@ def has_uncertainty(root: str | Path) -> pd.DataFrame:
 
 
 if __name__ == "__main__":
-    df = has_uncertainty("/home/nate/.cache/ilamb3/0.1")
+    for root in [
+        str(Path.home() / ".cache/ilamb3/0.1"),
+        "/var/www/www.ilamb.org/html/ILAMB-Data/DATA",
+        "/var/www/www.ilamb.org/html/ilamb3-data",
+    ]:
+        df = has_uncertainty(root)
+        print(f"Searching in {root=}...")
+        print(df.to_string())
