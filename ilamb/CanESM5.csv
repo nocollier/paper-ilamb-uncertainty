@@ -1,4 +1,0 @@
-mip_era,activity_drs,institution_id,source_id,experiment_id,member_id,table_id,variable_id,grid_label,path
-CMIP6,CMIP,CCCma,CanESM5,historical,r1i1p1f1,Amon,hfls,gn,/home/nate/esgf-data/CMIP6/CMIP/CCCma/CanESM5/historical/r1i1p1f1/Amon/hfls/gn/v20190429/hfls_Amon_CanESM5_historical_r1i1p1f1_gn_185001-201412.nc
-CMIP6,C4MIP,CCCma,CanESM5,1pctCO2-bgc,r1i1p1f1,fx,areacella,gn,/home/nate/esgf-data/CMIP6/C4MIP/CCCma/CanESM5/1pctCO2-bgc/r1i1p1f1/fx/areacella/gn/v20190429/areacella_fx_CanESM5_1pctCO2-bgc_r1i1p1f1_gn.nc
-CMIP6,C4MIP,CCCma,CanESM5,1pctCO2-bgc,r1i1p1f1,fx,sftlf,gn,/home/nate/esgf-data/CMIP6/C4MIP/CCCma/CanESM5/1pctCO2-bgc/r1i1p1f1/fx/sftlf/gn/v20190429/sftlf_fx_CanESM5_1pctCO2-bgc_r1i1p1f1_gn.nc
