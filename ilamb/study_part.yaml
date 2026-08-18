@@ -8,6 +8,14 @@ Uncertainty:
         - rmse
       use_uncertainty: true
 
+    DOLCE:
+      sources:
+        hfls: evspsbl/DOLCE/DOLCE.nc
+      analyses:
+        - bias
+        - rmse
+      use_uncertainty: true
+
   Sensible Heat:
     CLASS-1-1:
       sources:
@@ -55,6 +63,14 @@ Uncertainty:
         - rmse
       use_uncertainty: true
 
+    CARDAMOM-1100-1:
+      sources:
+        mrro: CARDAMOM-1100-1/ILAMB_NASA-JPL_CARDAMOM-1100-1_mon_mrro_gn_v20260813.nc
+      analyses:
+        - bias
+        - rmse
+      use_uncertainty: true
+
   Ecosystem Respiration:
     Fluxnet-2015:
       sources:
@@ -71,6 +87,14 @@ Uncertainty:
     Fluxnet-2015:
       sources:
         gpp: Fluxnet-2015/obs4MIPs_Fluxnet_Fluxnet-2015_mon_gpp_site_v20260302.nc
+      analyses:
+        - bias
+        - rmse
+      use_uncertainty: true
+
+    CARDAMOM-1100-1:
+      sources:
+        gpp: CARDAMOM-1100-1/ILAMB_NASA-JPL_CARDAMOM-1100-1_mon_gpp_gn_v20260813.nc
       analyses:
         - bias
         - rmse
@@ -188,4 +212,168 @@ Uncertainty:
             value: 700.
       analyses:
         - bias
+      use_uncertainty: true
+
+  Nitrogen Fixation:
+    Davies-Barnard:
+      sources:
+        fBNF: fBNF/DaviesBarnard/fBNF_0.5x0.5.nc
+      analyses:
+        - bias
+      use_uncertainty: true
+
+  Soil Carbon:
+    Wang2024:
+      sources:
+        cSoil: cSoil/Wang2024/wang2024_cSoil.nc
+      analyses:
+        - bias
+      use_uncertainty: true
+
+    SoilGrids2:
+      sources:
+        cSoil: cSoil/SoilGrids2/soilgrids2_cSoil.nc
+      analyses:
+        - bias
+      use_uncertainty: true
+
+    CARDAMOM-1100-1:
+      sources:
+        cSoil: CARDAMOM-1100-1/ILAMB_NASA-JPL_CARDAMOM-1100-1_mon_cSoil_gn_v20260813.nc
+      analyses:
+        - bias
+        - rmse
+      use_uncertainty: true
+
+  Litter Carbon:
+    CARDAMOM-1100-1:
+      sources:
+        cLitter: CARDAMOM-1100-1/ILAMB_NASA-JPL_CARDAMOM-1100-1_mon_cLitter_gn_v20260813.nc
+      analyses:
+        - bias
+        - rmse
+      use_uncertainty: true
+
+  Vegetation Carbon:
+    CARDAMOM-1100-1:
+      sources:
+        cVeg: CARDAMOM-1100-1/ILAMB_NASA-JPL_CARDAMOM-1100-1_mon_cVeg_gn_v20260813.nc
+      analyses:
+        - bias
+        - rmse
+      use_uncertainty: true
+
+  Evapotranspiration:
+    CARDAMOM-1100-1:
+      sources:
+        evspsbl: CARDAMOM-1100-1/ILAMB_NASA-JPL_CARDAMOM-1100-1_mon_et_gn_v20260813.nc
+      transforms:
+      analyses:
+        - bias
+        - rmse
+      use_uncertainty: true
+
+  Carbon From Fire:
+    CARDAMOM-1100-1:
+      sources:
+        fFire: CARDAMOM-1100-1/ILAMB_NASA-JPL_CARDAMOM-1100-1_mon_fFire_gn_v20260813.nc
+      analyses:
+        - bias
+        - rmse
+      use_uncertainty: true
+
+  Leaf Area Index:
+    CARDAMOM-1100-1:
+      sources:
+        lai: CARDAMOM-1100-1/ILAMB_NASA-JPL_CARDAMOM-1100-1_mon_lai_gn_v20260813.nc
+      analyses:
+        - bias
+        - rmse
+      use_uncertainty: true
+
+  Surface Runoff:
+    CARDAMOM-1100-1:
+      sources:
+        mrros: CARDAMOM-1100-1/ILAMB_NASA-JPL_CARDAMOM-1100-1_mon_mrros_gn_v20260813.nc
+      analyses:
+        - bias
+        - rmse
+      use_uncertainty: true
+
+  Net Biome Production:
+    CARDAMOM-1100-1:
+      sources:
+        nbp: CARDAMOM-1100-1/ILAMB_NASA-JPL_CARDAMOM-1100-1_mon_nbp_gn_v20260813.nc
+      analyses:
+        - bias
+        - rmse
+      use_uncertainty: true
+
+  Net Ecosystem Exchange:
+    CARDAMOM-1100-1:
+      sources:
+        nee: CARDAMOM-1100-1/ILAMB_NASA-JPL_CARDAMOM-1100-1_mon_nee_gn_v20260813.nc
+      transforms:
+        - expression:
+            expr: "nee = ra + rh - gpp"
+      analyses:
+        - bias
+        - rmse
+      use_uncertainty: true
+
+  Net Primary Production:
+    CARDAMOM-1100-1:
+      sources:
+        nbp: CARDAMOM-1100-1/ILAMB_NASA-JPL_CARDAMOM-1100-1_mon_nbp_gn_v20260813.nc
+      analyses:
+        - bias
+        - rmse
+      use_uncertainty: true
+
+  Autotrophic Respiration:
+    CARDAMOM-1100-1:
+      sources:
+        ra: CARDAMOM-1100-1/ILAMB_NASA-JPL_CARDAMOM-1100-1_mon_ra_gn_v20260813.nc
+      analyses:
+        - bias
+        - rmse
+      use_uncertainty: true
+
+  Heterotrophic Respiration:
+    CARDAMOM-1100-1:
+      sources:
+        rh: CARDAMOM-1100-1/ILAMB_NASA-JPL_CARDAMOM-1100-1_mon_rh_gn_v20260813.nc
+      analyses:
+        - bias
+        - rmse
+      use_uncertainty: true
+
+  Surface Snow:
+    CARDAMOM-1100-1:
+      sources:
+        snw: CARDAMOM-1100-1/ILAMB_NASA-JPL_CARDAMOM-1100-1_mon_snw_gn_v20260813.nc
+      analyses:
+        - bias
+        - rmse
+      use_uncertainty: true
+
+  Transpiration:
+    CARDAMOM-1100-1:
+      sources:
+        tran: CARDAMOM-1100-1/ILAMB_NASA-JPL_CARDAMOM-1100-1_mon_tran_gn_v20260813.nc
+      analyses:
+        - bias
+        - rmse
+      use_uncertainty: true
+
+  Terrestrial Water Storage:
+    CARDAMOM-1100-1:
+      sources:
+        tws: CARDAMOM-1100-1/ILAMB_NASA-JPL_CARDAMOM-1100-1_mon_tws_gn_v20260813.nc
+      transforms:
+        - expression:
+            expr: "tws = pr - evspsbl - mrro"
+      analyses:
+        - bias
+        - rmse
       use_uncertainty: true
