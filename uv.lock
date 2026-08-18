@@ -936,12 +936,14 @@ source = { virtual = "." }
 dependencies = [
     { name = "ilamb3" },
     { name = "intake-esgf" },
+    { name = "pyyaml" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "ilamb3", git = "https://github.com/rubisco-sfa/ilamb3?rev=main" },
     { name = "intake-esgf", specifier = ">=2026.6.4" },
+    { name = "pyyaml", specifier = ">=6.0.3" },
 ]
 
 [[package]]
