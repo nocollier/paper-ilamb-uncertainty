@@ -242,25 +242,6 @@ Uncertainty:
         cSoil: CARDAMOM-1100-1/ILAMB_NASA-JPL_CARDAMOM-1100-1_mon_cSoil_gn_v20260813.nc
       analyses:
         - bias
-        - rmse
-      use_uncertainty: true
-
-  Litter Carbon:
-    CARDAMOM-1100-1:
-      sources:
-        cLitter: CARDAMOM-1100-1/ILAMB_NASA-JPL_CARDAMOM-1100-1_mon_cLitter_gn_v20260813.nc
-      analyses:
-        - bias
-        - rmse
-      use_uncertainty: true
-
-  Vegetation Carbon:
-    CARDAMOM-1100-1:
-      sources:
-        cVeg: CARDAMOM-1100-1/ILAMB_NASA-JPL_CARDAMOM-1100-1_mon_cVeg_gn_v20260813.nc
-      analyses:
-        - bias
-        - rmse
       use_uncertainty: true
 
   Evapotranspiration:
@@ -361,18 +342,6 @@ Uncertainty:
     CARDAMOM-1100-1:
       sources:
         tran: CARDAMOM-1100-1/ILAMB_NASA-JPL_CARDAMOM-1100-1_mon_tran_gn_v20260813.nc
-      analyses:
-        - bias
-        - rmse
-      use_uncertainty: true
-
-  Terrestrial Water Storage:
-    CARDAMOM-1100-1:
-      sources:
-        tws: CARDAMOM-1100-1/ILAMB_NASA-JPL_CARDAMOM-1100-1_mon_tws_gn_v20260813.nc
-      transforms:
-        - expression:
-            expr: "tws = pr - evspsbl - mrro"
       analyses:
         - bias
         - rmse
