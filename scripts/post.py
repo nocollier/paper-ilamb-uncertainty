@@ -20,3 +20,11 @@ def build_uncertainty_comparison_dataframe(
 if __name__ == "__main__":
     df = build_uncertainty_comparison_dataframe(Path("../ilamb/_build"))
     print(df)
+
+    dfb = df[df.index.get_level_values(3) == "Bias"]
+    dfr = df[df.index.get_level_values(3) == "RMSE"]
+
+    print("Difference stats")
+    for dt, name in zip([df, dfb, dfr], ["Total", "Bias", "RMSE"]):
+        print(f"----------------- {name} -------------------")
+        print((dt["Uncertainty"] - dt["NoUncertainty"]).describe())

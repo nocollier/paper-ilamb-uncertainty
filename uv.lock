@@ -517,8 +517,8 @@ wheels = [
 
 [[package]]
 name = "ilamb3"
-version = "2026.6.15.post1.dev54+g34a4d749a"
-source = { git = "https://github.com/rubisco-sfa/ilamb3?rev=main#34a4d749ae7e17b45ff758c404f9017c55bbc189" }
+version = "2026.6.15.post1.dev58+g2a5b3b920"
+source = { git = "https://github.com/rubisco-sfa/ilamb3?rev=main#2a5b3b92078046eeab93cdfc7bc5b2191d5719b9" }
 dependencies = [
     { name = "cartopy" },
     { name = "cf-xarray" },
