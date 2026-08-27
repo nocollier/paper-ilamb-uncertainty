@@ -248,7 +248,6 @@ Uncertainty:
     CARDAMOM-1100-1:
       sources:
         evspsbl: CARDAMOM-1100-1/ILAMB_NASA-JPL_CARDAMOM-1100-1_mon_et_gn_v20260813.nc
-      transforms:
       analyses:
         - bias
         - rmse
