@@ -36,15 +36,39 @@ Generalization of the Collier2018 in the Hoffman nbp dataset.
 
 Cartoons illustrating how big the changes may be and motivting why it is important to consider.
 
-## Discussion
+Blunts the sharpness of our measuring tool--creates a feedback mechanism for when constraints are not tight enough.
 
-Describe the numerical experiment we designed to highlight and explain the consequences. Table of the reference data used with explanations of what uncertainty means for each. Table of the model data? Pointers to the ilamb assets.
+## Datasets
 
-Scores only increase. Literally "number go up". This is by construction, because we are discounting errors by the uncertainty.
+A subsection for each broad class of datasets
 
-As the uncertainty tends to 0, the new method reduces to the old method.
+- LORA/DOLCE/CLASS, make a comparison of source spread/std and CLASS uncertainty
+- CARDAMOM
+- Fluxnet
+- ...
+
+We will want to talk about what uncertainty represents in each dataset.
+
+Summarizing table of the reference data used with explanations of what uncertainty means for each.
+
+## Experimental Setup
+
+Describe the numerical experiment we designed to highlight and explain the consequences. Table of the model data? Pointers to the ilamb assets.
+
+## Results
+
+Scores only increase. Literally "number go up". This is by construction, because we are discounting errors by the uncertainty. As the uncertainty tends to 0, the new method reduces to the old method.
 
 For the reference and model data selected, there is no large change in model rankings. Pairwise plots of new vs old. This implies that we have not committed a large sin in ignoring uncertainty. It is rather that score maps stand to communicate more information about where models are truly deficient.
+
+Specific cases
+
+- Small changes: call them out but then show a few maps of what that looks like?
+- Larger changes: call them out but then show a few maps of what that looks like?
+- Anomalies:
+  - soil carbon, especially Soil Grids 2, product is not useful for constraining models, feedback loop to data providers for tighter constraints
+  - constrast to Wang where data is USA and therefore certainties are tighter
+  - look at the 2 different uncertainty representations in WangMao
 
 Select and show maps with clear interpretability improvements.
 

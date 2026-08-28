@@ -62,20 +62,20 @@ def by_var_dset(df: pd.DataFrame, path: Path = Path("_figs")):
         xlim = ax.get_xlim()
         ylim = ax.get_ylim()
         ax.fill_between(
-            [0, 1],
+            [-1, 2],
             [-1, -1],
-            [0, 1],
+            [-1, 2],
             color="k",
             alpha=0.15,
             lw=0,
             label="Score Degrade Zone",
         )
         # xlim, ylim = check_lims(xlim, ylim)
-        ax.set_xlim(xlim)
-        ax.set_ylim(ylim)
+        ax.set_xlim([0, 1])
+        ax.set_ylim([0, 1.05])
         ax.grid(color="0.85")
-        ax.xaxis.set_major_locator(MultipleLocator(0.1))
-        ax.yaxis.set_major_locator(MultipleLocator(0.1))
+        ax.xaxis.set_major_locator(MultipleLocator(0.2))
+        ax.yaxis.set_major_locator(MultipleLocator(0.2))
         # ax.legend(loc="lower right")
         # fig.savefig(path / f"{var}_{dset}.png")
         # plt.close()
