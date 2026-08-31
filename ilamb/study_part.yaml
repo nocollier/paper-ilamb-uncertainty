@@ -100,7 +100,7 @@ Uncertainty:
         - rmse
       use_uncertainty: true
 
-  Oxygen Surface:
+  Oxygen 0m:
     WOA-23:
       sources:
         o2: WOA-23/obs4MIPs_NOAA-NCEI-OCL_WOA-23_monC_o2_gn_v20260302.nc
@@ -111,7 +111,7 @@ Uncertainty:
         - bias
       use_uncertainty: true
 
-  Nitrate Surface:
+  Nitrate 0m:
     WOA-23:
       sources:
         no3: WOA-23/obs4MIPs_NOAA-NCEI-OCL_WOA-23_monC_no3_gn_v20260302.nc
@@ -122,7 +122,7 @@ Uncertainty:
         - bias
       use_uncertainty: true
 
-  Phosphate Surface:
+  Phosphate 0m:
     WOA-23:
       sources:
         po4: WOA-23/obs4MIPs_NOAA-NCEI-OCL_WOA-23_monC_po4_gn_v20260302.nc
@@ -133,7 +133,7 @@ Uncertainty:
         - bias
       use_uncertainty: true
 
-  Silicate Surface:
+  Silicate 0m:
     WOA-23:
       sources:
         si: WOA-23/obs4MIPs_NOAA-NCEI-OCL_WOA-23_monC_si_gn_v20260302.nc
@@ -144,7 +144,7 @@ Uncertainty:
         - bias
       use_uncertainty: true
 
-  Temperature Surface:
+  Temperature 0m:
     WOA-23:
       sources:
         thetao: WOA-23/obs4MIPs_NOAA-NCEI-OCL_WOA-23_monC_thetao_gn_v20260302.nc
@@ -153,63 +153,6 @@ Uncertainty:
             value: 0.
       alternate_vars:
         - tos
-      analyses:
-        - bias
-      use_uncertainty: true
-
-  Temperature 200m:
-    WOA-23:
-      sources:
-        thetao: WOA-23/obs4MIPs_NOAA-NCEI-OCL_WOA-23_monC_thetao_gn_v20260302.nc
-      transforms:
-        - select_depth:
-            value: 200.
-      analyses:
-        - bias
-      use_uncertainty: true
-
-  Temperature 700m:
-    WOA-23:
-      sources:
-        thetao: WOA-23/obs4MIPs_NOAA-NCEI-OCL_WOA-23_monC_thetao_gn_v20260302.nc
-      transforms:
-        - select_depth:
-            value: 700.
-      analyses:
-        - bias
-      use_uncertainty: true
-
-  Salinity Surface:
-    WOA-23:
-      sources:
-        so: WOA-23/obs4MIPs_NOAA-NCEI-OCL_WOA-23_monC_so_gn_v20260302.nc
-      transforms:
-        - select_depth:
-            value: 0.
-      alternate_vars:
-        - sos
-      analyses:
-        - bias
-      use_uncertainty: true
-
-  Salinity 200m:
-    WOA-23:
-      sources:
-        so: WOA-23/obs4MIPs_NOAA-NCEI-OCL_WOA-23_monC_so_gn_v20260302.nc
-      transforms:
-        - select_depth:
-            value: 200.
-      analyses:
-        - bias
-      use_uncertainty: true
-
-  Salinity 700m:
-    WOA-23:
-      sources:
-        so: WOA-23/obs4MIPs_NOAA-NCEI-OCL_WOA-23_monC_so_gn_v20260302.nc
-      transforms:
-        - select_depth:
-            value: 700.
       analyses:
         - bias
       use_uncertainty: true
