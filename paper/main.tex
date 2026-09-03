@@ -1,0 +1,235 @@
+\documentclass{agujournal}
+\journalname{Journal of Advances in Modeling Earth Systems (JAMES)}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,citecolor=black,filecolor=black,linkcolor=black,urlcolor=black,breaklinks=true}
+\usepackage{natbib}
+\bibpunct{(}{)}{;}{a}{,}{,~}
+\hyphenation{ILAMB}
+\hyphenation{CARDAMOM}
+
+\newcommand{\bx}{\mathbf{x}}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+\begin{document}
+
+\title{The International Land Model Benchmarking (ILAMB) System: Observational Uncertainty}
+
+\authors{Nathan~Collier\affil{1},
+	Morgan Steckler\affil{1},
+	Forrest~M.~Hoffman\affil{1,2},
+	David~M.~Lawrence\affil{3}}
+
+\affiliation{1}{Computational Science and Engineering Division, Oak Ridge National Laboratory, Oak Ridge, TN, USA}
+\affiliation{2}{Department of Civil \& Environmental Engineering, University of Tennessee, Knoxville, TN, USA}
+\affiliation{3}{Climate \& Global Dynamics Division, National Center for Atmospheric Research, Boulder, CO, USA}
+
+\correspondingauthor{Nathan Collier}{nathaniel.collier@gmail.com}
+
+\begin{abstract}
+	Blah
+\end{abstract}
+
+\section{Introduction}\label{sec:intro}
+Blah \cite{Collier_JAMES_20181012,Hobeichi_CLASS_2019,Hobeichi_sub_2020}
+
+\section{Methodology}\label{sec:method}
+
+The ILAMB scoring methodology aims to synthesize model performance with respect to a reference in several aspects including bias, root mean squared error (RMSE), annual cycle, and spatial distribution. The goal is to be comprehensive and provide a uniform high level summary of the performance of these models. To this end, we have developed expressions~\cite{Collier_JAMES_20181012} that synthesize the model performance in each aspect, reducing errors to a single \textit{score} that varies from 0 to 1, indicating poor and perfect performance respectively.
+
+In the present work, we wish to modify the scoring methodology for the bias and RMSE aspects to include notions of the reference uncertainty when present. We approach this change with four goals in mind:
+%
+\begin{enumerate}
+	\item As the uncertainty tends to zero, the proposed additions should reduce to the original ILAMB methodoloy for each aspect. While there are an increasing number of reference datasets with some measure of uncertainty, the majority do not. Layering in uncertainty in this way lets us understand and interpret results with and without uncertainty within the same framework.
+	\item As the meaning or intrepretation of \textit{uncertainty} varies in each data product, we should use a simple approach and make no assumptions about normality.
+	\item The methodological changes should only affect how we synthesize errors (score) and not affect raw error or other scalars we report.
+	\item For a given model location (or pixel), the proposed methodology should never degrade the score. The uncertainty should make us more conservative about judgements. This in turn also means that a perfect score no longer represents a flawless match to the reference data, but rather indicates a limit to the conclusions we can draw from a given reference dataset.
+\end{enumerate}
+
+As in~\cite{Collier_JAMES_20181012}, we discuss the analysis of a generalized variable $v(t,\bx)$ which we assume represents a piecewise discontinuous function of constants in space and time. This means that the temporal domain, represented by the variable $t$, is defined by the beginning $t_0$ and ending $t_f$ of time intervals and the spatial domain, represented by the variable $\bx$ (bolded to emphasize it is a vector quantity), represents the areas created by cell boundaries or the areas associated with data sites. A single overbar denotes a temporal mean, expressed as an integral,
+%
+\begin{equation}
+	\bar{v}(\bx) = \frac{1}{t_f-t_0} \int_{t_0}^{t_f} v(t,\bx)\ dt\label{e:mean}
+\end{equation}
+%
+The exposition below will also make use of \textit{centralized} versions of variables which we will denote by a hat symbol,
+%
+\begin{equation}
+	\widehat{v}(t,\bx) = v(t,\bx)-\bar{v}(\bx)\label{e:center}
+\end{equation}
+%
+When necessary, we use the subscript `ref' to reflect a variable whose source is a reference or observational dataset, and the subscript `com' for the comparison or model datasets. We approach changes to our methodology assuming that we have a comparison (model) variable $v_{\mathrm{com}}(t,\bx)$ and reference variable $v_{\mathrm{ref}}(t,\bx)$ with uncertainty given at each space-time location $\delta v(t,\bx)$. For simplicity in this exposition, we will assume that the uncertainty represents a kind of standard error. However, uneven interval style uncertainty such as those represented by confidence intervals can be used with simple additions to the implementation.
+
+In general, the ILAMB methodology develops a spatial measure of relative error $\varepsilon(\bx)$ and then converts this to a score through the exponential,
+%
+\begin{equation}
+	s(\bx) = e^{-\varepsilon(\bx)}\label{e:score}
+\end{equation}
+%
+This part of the procedure will remain unchanged. In the following subsections we modify the expressions of relative error for each aspect.
+
+\subsection{Bias}
+
+In~\cite{Collier_JAMES_20181012} the relative error for the bias is given as,
+%
+\begin{equation}
+	\varepsilon^{p}_{\mathrm{bias}}(\bx) = \frac{\left| \overline{v_{\mathrm{com}}}(\bx) -\overline{v_{\mathrm{ref}}}(\bx) \right|}{\mathrm{std}_t\left( v_{\mathrm{ref}}(t,\bx)\right)}\label{e:bias0}
+\end{equation}
+%
+In words, we compute the relative error by dividing the absolute value of the bias by the standard deviation in time of the reference data. That is, the size of the bias is normalized by how much variation is present at each spatial location. To avoid confusion with expressions derived in this paper, we use a superscript $p$ to indicate that this was the previous expression. We propose the following change to the bias relative error:
+
+\begin{equation}
+	\varepsilon_{\mathrm{bias}}(\bx) = \frac{\max\left(\left| \overline{v_{\mathrm{com}}}(\bx) -\overline{v_{\mathrm{ref}}}(\bx) \right|-\overline{\delta}(\bx),0\right)}{\mathrm{std}_t\left( v_{\mathrm{ref}}(t,\bx)\right)}\label{e:bias}
+\end{equation}
+
+This means that we substract the mean reference uncertainty from the bias and only count where this expression is greater than 0. In the limit that the uncertainty is zero, $\overline{\delta}(\bx)=0$, the numerator reduces to the absolute value of the bias recovering to equation~\eqref{e:bias0}. In this interpretation, the uncertainty functions as an error discount also leading to scores that will not degrade.
+
+\begin{figure}[htbp]
+	\centering
+	\begin{subfigure}[t]{0.495\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{../figs/bias_moderate.png}
+		\caption{Moderate gains in bias score when the uncertainty is relatively low. Only the bias that falls outside the uncertainty envelope is penalized. Site chosen from central Canada.}
+		\label{fig:modbias}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[t]{0.495\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{../figs/bias_large.png}
+		\caption{Large gains in bias score as the latent heat is highly uncertain. As the bias falls within the uncertainty envelope, this site receives a perfect score. Site chosen from Indonesia.}
+		\label{fig:bigbias}
+	\end{subfigure}
+	\caption{Sample illustrations of how uncertainty affects the ILAMB scoring methodology for the bias at particular grid cells. In each case the reference variable $v_{\mathrm{ref}}(t)$ is shown in black along with its uncertainty $\delta(t)$ shaded grey. The comparison variable $v_{\mathrm{com}}(t)$ is shown in red. The temporal mean of each is shown to the right of the plot and indicated by a bar over the corresponding variable.}
+	\label{fig:bias}
+\end{figure}
+%
+To develop some intuition in how these formulas work and compare to the previous definitions, consider the following case study comparing the latent heat provided by the CLASS-1-1 dataset to that of CanESM5 compared at two locations. One location, site A, is in central Canada and corresponds to a place where the uncertainty is relatively low. The other location, site B, is in Indonesia and corresponds to a place with poor model characterization and high uncertainty. Two years of the time trace at both sites is shown in figure~\ref{fig:bias}.
+
+The traces for Site A are shown in figure~\ref{fig:modbias}. As we have selected values at a site, the dependence on $\bx$ has been dropped. While the model captures the major trends of the reference datasaet, there is a positive bias shown by the dashed lines to the right of the plot. However, there is also some reference uncertainty to consider also. If we harvest values from these datasets and substitute into equations~\eqref{e:bias0},~\eqref{e:bias}, and \eqref{e:score}, we get the following scores.
+%
+\begin{align*}
+	\overline{v_{\mathrm{ref}}}                 & = 32.4                                                           \\
+	\overline{v_{\mathrm{com}}}                 & = 44.3                                                           \\
+	\mathrm{std}_t\left(v_{\mathrm{ref}}\right) & = 32.8                                                           \\
+	\overline{\delta}                           & = 7.378                                                          \\
+	\varepsilon^{p}                             & = \frac{\left| 44.3 - 32.4 \right|}{32.8}                = 0.363 \\
+	\varepsilon                                 & = \frac{\max(\left| 44.3 - 32.4 \right| - 7.4,0)}{32.8}  = 0.137 \\
+	s^{p}_{\mathrm{bias}}                       & = e^{-0.363} = 0.696                                             \\
+	s_{\mathrm{bias}}                           & = e^{-0.137} = 0.872
+\end{align*}
+%
+So by also considering the reference uncertainty, our score in this location has changed from 0.696 to 0.872. In constrast, consider the traces for site B shown in figure~\ref{fig:bigbias}. We can extract data from these time traces and make the same comparison as with site A.
+%
+\begin{align*}
+	\overline{v_{\mathrm{ref}}}                 & = 103.8                                                       \\
+	\overline{v_{\mathrm{com}}}                 & = 123.0                                                       \\
+	\mathrm{std}_t\left(v_{\mathrm{ref}}\right) & = 10.0                                                        \\
+	\overline{\delta}                           & = 24.6                                                        \\
+	\varepsilon^{p}                             & = \frac{\left| 123- 103.8 \right|}{10.0}               = 1.92 \\
+	\varepsilon                                 & = \frac{\max(\left| 123-103.8\right| - 24.6,0)}{10.0}  = 0    \\
+	s^{p}_{\mathrm{bias}}                       & = e^{-1.92} = 0.147                                           \\
+	s_{\mathrm{bias}}                           & = e^{0} = 1
+\end{align*}
+%
+The model in this case does a poor job at capturing the mean behavior of the reference data leading to a significant positive bias and a low score of 0.147. However, once we consider how uncertain the reference data is in this location, this score is improved to 1.0. This does not mean that the model is perfect or that there is no more work to be done in improving parameterizations. It rather means that we have reached the interpretative limit of what this dataset can tell us in this location.
+%
+\subsection{RMSE}
+%
+We address uncertainty in scoring the RMSE in a similar fashion. In~\cite{Collier_JAMES_20181012} the relative error for the RMSE is given as,
+%
+\begin{equation}
+	\varepsilon^{p}_{\mathrm{rmse}}(\bx) =
+	\sqrt{\int_{t_0}^{t_f}
+		\left(\widehat{v_{\mathrm{com}}}(t,\bx)-\widehat{v_{\mathrm{ref}}}(t,\bx)\right)^2
+		\ dt} \bigg/
+	\sqrt{\int_{t_0}^{t_f}
+		\left(\widehat{v_{\mathrm{ref}}}(t,\bx)\right)^2
+		\ dt}
+	\label{e:rmse0}
+\end{equation}
+%
+where the $1/(t_f-t_0)$ terms have been dropped as they cancel out. Note that when developing the RMSE score, we use the centralized versions of the variables. This is because we wish to develop a score which necessarily correlates with bias. A large bias will always lead to a large RMSE and thus a model would be double penalized as we synthesize. By using the centralized variables, we subtract out the bias and remove one strong correlate.
+
+We use the same idea as in the bias score, where we aim to only penalize errors that go beyond the uncertainty. In the case of RMSE we do this inside the integrand, leading to the follow change in relative error,
+%
+\begin{multline}
+	\varepsilon_{\mathrm{rmse}}(\bx) =
+	\sqrt{\int_{t_0}^{t_f}
+		\left(\max\left(\left|\widehat{v_{\mathrm{com}}}(t,\bx)-\widehat{v_{\mathrm{ref}}}(t,\bx)\right|-\delta(t,\bx),0\right)\right)^2
+		\ dt} \bigg/\\
+	\sqrt{\int_{t_0}^{t_f}
+		\left(\widehat{v_{\mathrm{ref}}}(t,\bx)\right)^2
+		\ dt}
+	\label{e:rmse}
+\end{multline}
+%
+\begin{figure}[htbp]
+	\centering
+	\begin{subfigure}[t]{0.495\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{../figs/rmse_moderate.png}
+		\caption{Moderate gains in RMSE score when the uncertainty is relatively low. The error that is squared and integrated is discounted by the reference uncertainty. Site chosen from central Canada.}
+		\label{fig:modrmse}
+	\end{subfigure}
+	\hfill % Adds horizontal space between the two images
+	% Second Subfigure
+	\begin{subfigure}[t]{0.495\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{../figs/rmse_large.png}
+		\caption{Large gains in RMSE score as the latent heat is highly uncertain. As the bias falls withing the uncertainty envelope, this site receives a perfect score. Site chosen from Indonesia.}
+		\label{fig:bigrmse}
+	\end{subfigure}
+	\caption{Sample illustrations of how uncertainty affects the ILAMB scoring methodology for the RMSE at particular grid cells. In each case the reference variable $v_{\mathrm{ref}}(t)$ is shown in black along with its uncertainty $\delta(t)$ shaded grey. The comparison variable $v_{\mathrm{com}}(t)$ is shown in red. The temporal mean of each is shown to the right of the plot and indicated by a bar over the corresponding variable.}
+	\label{fig:rmse}
+\end{figure}
+%
+While the equation may be complicated to read, the interpretation is straightforward to intuit in figure~\ref{fig:rmse} where we repeat the comparisons at the same two sites except the traces have been centralized. When computing $\varepsilon^p_{\mathrm{rmse}}(\bx)$ from equation~\eqref{e:rmse0}, the integral in the numerator is summing up the area between the red and black curve. In constrast, when computing $\varepsilon_{\mathrm{rmse}}(\bx)$ from equation~\eqref{e:rmse} only the light red shaded areas are included in the numerator's integral, leading to a discount in the total integrated error.
+
+
+\section{Datasets}\label{sec:data}
+Blah
+
+\subsection{Optimal Linear Combination}
+Blah
+
+\subsection{{CARDAMOM}}
+Blah
+
+\section{Experimental Setup}\label{sec:setup}
+
+\section{Results}\label{sec:results}
+Blah
+
+\clearpage
+\section*{Acknowledgments}\label{sec:ack}
+
+This manuscript has been authored by UT-Battelle, LLC under Contract
+No. DE-AC05-00OR22725 with the U.S. Department of Energy. The United
+States Government retains and the publisher, by accepting the article
+for publication, acknowledges that the United States Government
+retains a non-exclusive, paid-up, irrevocable, world-wide license to
+publish or reproduce the published form of this manuscript, or allow
+others to do so, for United States Government purposes. The Department
+of Energy will provide public access to these results of federally
+sponsored research in accordance with the DOE Public Access Plan
+(http://energy.gov/downloads/doe-public-access-plan).
+
+This research was supported through the Reducing Uncertainties in
+Biogeochemical Interactions through Synthesis and Computation
+Scientific Focus Area (RUBISCO SFA), which is sponsored by the
+Regional and Global Climate Modeling (RGCM) Program in the Climate and
+Environmental Sciences Division (CESD) of the Office of Biological and
+Environmental Research (BER) in the U.S.\ Department of Energy Office
+of Science.  Oak Ridge National Laboratory (ORNL) is managed by
+UT-Battelle, LLC for the U.S. Department of Energy under Contract
+No.\ DE-AC05-00OR22725. The National Center for Atmospheric Research
+(NCAR) is managed by the University Corporation for Atmospheric
+Research (UCAR) on behalf of the National Science Foundation (NSF).
+
+\bibliography{refs/Collier_JAMES_20181012,  % ILAMB paper
+	refs/Hobeichi_CLASS_2019.bib, % CLASS dataset
+}
+
+\end{document}
