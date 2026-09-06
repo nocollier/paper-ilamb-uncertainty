@@ -18,7 +18,7 @@
 \title{The International Land Model Benchmarking (ILAMB) System: Observational Uncertainty}
 
 \authors{Nathan~Collier\affil{1},
-	Morgan Steckler\affil{1},
+	Morgan~Steckler\affil{1},
 	Forrest~M.~Hoffman\affil{1,2},
 	David~M.~Lawrence\affil{3}}
 
@@ -33,11 +33,11 @@
 \end{abstract}
 
 \section{Introduction}\label{sec:intro}
-Blah \cite{Collier_JAMES_20181012,Hobeichi_CLASS_2019,Hobeichi_sub_2020}
+Blah \cite{Collier_JAMES_20181101}
 
 \section{Methodology}\label{sec:method}
 
-The ILAMB scoring methodology aims to synthesize model performance with respect to a reference in several aspects including bias, root mean squared error (RMSE), annual cycle, and spatial distribution. The goal is to be comprehensive and provide a uniform high level summary of the performance of these models. To this end, we have developed expressions~\cite{Collier_JAMES_20181012} that synthesize the model performance in each aspect, reducing errors to a single \textit{score} that varies from 0 to 1, indicating poor and perfect performance respectively.
+The ILAMB scoring methodology aims to synthesize model performance with respect to a reference in several aspects including bias, root mean squared error (RMSE), annual cycle, and spatial distribution. The goal is to be comprehensive and provide a uniform high level summary of the performance of these models. To this end, we have developed expressions~\cite{Collier_JAMES_20181101} that synthesize the model performance in each aspect, reducing errors to a single \textit{score} that varies from 0 to 1, indicating poor and perfect performance respectively.
 
 In the present work, we wish to modify the scoring methodology for the bias and RMSE aspects to include notions of the reference uncertainty when present. We approach this change with four goals in mind:
 %
@@ -48,7 +48,7 @@ In the present work, we wish to modify the scoring methodology for the bias and 
 	\item For a given model location (or pixel), the proposed methodology should never degrade the score. The uncertainty should make us more conservative about judgements. This in turn also means that a perfect score no longer represents a flawless match to the reference data, but rather indicates a limit to the conclusions we can draw from a given reference dataset.
 \end{enumerate}
 
-As in~\cite{Collier_JAMES_20181012}, we discuss the analysis of a generalized variable $v(t,\bx)$ which we assume represents a piecewise discontinuous function of constants in space and time. This means that the temporal domain, represented by the variable $t$, is defined by the beginning $t_0$ and ending $t_f$ of time intervals and the spatial domain, represented by the variable $\bx$ (bolded to emphasize it is a vector quantity), represents the areas created by cell boundaries or the areas associated with data sites. A single overbar denotes a temporal mean, expressed as an integral,
+As in~\cite{Collier_JAMES_20181101}, we discuss the analysis of a generalized variable $v(t,\bx)$ which we assume represents a piecewise discontinuous function of constants in space and time. This means that the temporal domain, represented by the variable $t$, is defined by the beginning $t_0$ and ending $t_f$ of time intervals and the spatial domain, represented by the variable $\bx$ (bolded to emphasize it is a vector quantity), represents the areas created by cell boundaries or the areas associated with data sites. A single overbar denotes a temporal mean, expressed as an integral,
 %
 \begin{equation}
 	\bar{v}(\bx) = \frac{1}{t_f-t_0} \int_{t_0}^{t_f} v(t,\bx)\ dt\label{e:mean}
@@ -60,7 +60,7 @@ The exposition below will also make use of \textit{centralized} versions of vari
 	\widehat{v}(t,\bx) = v(t,\bx)-\bar{v}(\bx)\label{e:center}
 \end{equation}
 %
-When necessary, we use the subscript `ref' to reflect a variable whose source is a reference or observational dataset, and the subscript `com' for the comparison or model datasets. We approach changes to our methodology assuming that we have a comparison (model) variable $v_{\mathrm{com}}(t,\bx)$ and reference variable $v_{\mathrm{ref}}(t,\bx)$ with uncertainty given at each space-time location $\delta v(t,\bx)$. For simplicity in this exposition, we will assume that the uncertainty represents a kind of standard error. However, uneven interval style uncertainty such as those represented by confidence intervals can be used with simple additions to the implementation.
+When necessary, we use the subscript `ref' to reflect a variable whose source is a reference or observational dataset, and the subscript `com' for the comparison or model datasets. We approach changes to our methodology assuming that we have a comparison (model) variable $v_{\mathrm{com}}(t,\bx)$ and reference variable $v_{\mathrm{ref}}(t,\bx)$ with uncertainty given at each space-time location $\delta(t,\bx)$. For simplicity in this exposition, we will assume that the uncertainty represents a kind of standard error. However, uneven interval style uncertainty such as those represented by confidence intervals can be used with simple additions to the implementation.
 
 In general, the ILAMB methodology develops a spatial measure of relative error $\varepsilon(\bx)$ and then converts this to a score through the exponential,
 %
@@ -72,7 +72,7 @@ This part of the procedure will remain unchanged. In the following subsections w
 
 \subsection{Bias}
 
-In~\cite{Collier_JAMES_20181012} the relative error for the bias is given as,
+In~\cite{Collier_JAMES_20181101} the relative error for the bias is given as,
 %
 \begin{equation}
 	\varepsilon^{p}_{\mathrm{bias}}(\bx) = \frac{\left| \overline{v_{\mathrm{com}}}(\bx) -\overline{v_{\mathrm{ref}}}(\bx) \right|}{\mathrm{std}_t\left( v_{\mathrm{ref}}(t,\bx)\right)}\label{e:bias0}
@@ -105,7 +105,7 @@ This means that we substract the mean reference uncertainty from the bias and on
 	\label{fig:bias}
 \end{figure}
 %
-To develop some intuition in how these formulas work and compare to the previous definitions, consider the following case study comparing the latent heat provided by the CLASS-1-1 dataset to that of CanESM5 compared at two locations. One location, site A, is in central Canada and corresponds to a place where the uncertainty is relatively low. The other location, site B, is in Indonesia and corresponds to a place with poor model characterization and high uncertainty. Two years of the time trace at both sites is shown in figure~\ref{fig:bias}.
+To develop some intuition in how these formulas work and compare to the previous definitions, consider the following case study comparing the latent heat provided by the CLASS (\cite{Hobeichi_JClim_20200301}) dataset to that of CanESM5 compared at two locations. One location, site A, is in central Canada and corresponds to a place where the uncertainty is relatively low. The other location, site B, is in Indonesia and corresponds to a place with poor model characterization and high uncertainty. Two years of the time trace at both sites is shown in figure~\ref{fig:bias}.
 
 The traces for Site A are shown in figure~\ref{fig:modbias}. As we have selected values at a site, the dependence on $\bx$ has been dropped. While the model captures the major trends of the reference datasaet, there is a positive bias shown by the dashed lines to the right of the plot. However, there is also some reference uncertainty to consider also. If we harvest values from these datasets and substitute into equations~\eqref{e:bias0},~\eqref{e:bias}, and \eqref{e:score}, we get the following scores.
 %
@@ -137,7 +137,7 @@ The model in this case does a poor job at capturing the mean behavior of the ref
 %
 \subsection{RMSE}
 %
-We address uncertainty in scoring the RMSE in a similar fashion. In~\cite{Collier_JAMES_20181012} the relative error for the RMSE is given as,
+We address uncertainty in scoring the RMSE in a similar fashion. In~\cite{Collier_JAMES_20181101} the relative error for the RMSE is given as,
 %
 \begin{equation}
 	\varepsilon^{p}_{\mathrm{rmse}}(\bx) =
@@ -194,8 +194,10 @@ Blah
 \subsection{Optimal Linear Combination}
 Blah
 
-\subsection{{CARDAMOM}}
+\subsection{CARDAMOM}
 Blah
+
+\subsection{How to encode uncertainty with CF conventions}
 
 \section{Experimental Setup}\label{sec:setup}
 
@@ -205,31 +207,10 @@ Blah
 \clearpage
 \section*{Acknowledgments}\label{sec:ack}
 
-This manuscript has been authored by UT-Battelle, LLC under Contract
-No. DE-AC05-00OR22725 with the U.S. Department of Energy. The United
-States Government retains and the publisher, by accepting the article
-for publication, acknowledges that the United States Government
-retains a non-exclusive, paid-up, irrevocable, world-wide license to
-publish or reproduce the published form of this manuscript, or allow
-others to do so, for United States Government purposes. The Department
-of Energy will provide public access to these results of federally
-sponsored research in accordance with the DOE Public Access Plan
-(http://energy.gov/downloads/doe-public-access-plan).
+This manuscript has been authored by UT-Battelle, LLC under Contract No. DE-AC05-00OR22725 with the U.S. Department of Energy. The United States Government retains and the publisher, by accepting the article for publication, acknowledges that the United States Government retains a non-exclusive, paid-up, irrevocable, world-wide license to publish or reproduce the published form of this manuscript, or allow others to do so, for United States Government purposes. The Department of Energy will provide public access to these results of federally sponsored research in accordance with the DOE Public Access Plan (http://energy.gov/downloads/doe-public-access-plan).
 
-This research was supported through the Reducing Uncertainties in
-Biogeochemical Interactions through Synthesis and Computation
-Scientific Focus Area (RUBISCO SFA), which is sponsored by the
-Regional and Global Climate Modeling (RGCM) Program in the Climate and
-Environmental Sciences Division (CESD) of the Office of Biological and
-Environmental Research (BER) in the U.S.\ Department of Energy Office
-of Science.  Oak Ridge National Laboratory (ORNL) is managed by
-UT-Battelle, LLC for the U.S. Department of Energy under Contract
-No.\ DE-AC05-00OR22725. The National Center for Atmospheric Research
-(NCAR) is managed by the University Corporation for Atmospheric
-Research (UCAR) on behalf of the National Science Foundation (NSF).
+This research was supported through the Reducing Uncertainties in Biogeochemical Interactions through Synthesis and Computation Scientific Focus Area (RUBISCO SFA), which is sponsored by the Regional and Global Climate Modeling (RGCM) Program in the Climate and Environmental Sciences Division (CESD) of the Office of Biological and Environmental Research (BER) in the U.S.\ Department of Energy Office of Science.  Oak Ridge National Laboratory (ORNL) is managed by UT-Battelle, LLC for the U.S. Department of Energy under Contract No.\ DE-AC05-00OR22725. The National Center for Atmospheric Research (NCAR) is managed by the University Corporation for Atmospheric Research (UCAR) on behalf of the National Science Foundation (NSF).
 
-\bibliography{refs/Collier_JAMES_20181012,  % ILAMB paper
-	refs/Hobeichi_CLASS_2019.bib, % CLASS dataset
-}
+\bibliography{refs/Collier_JAMES_20181101,refs/Hobeichi_JClim_20200301}
 
 \end{document}
