@@ -175,7 +175,7 @@ Uncertainty:
 
     SoilGrids2:
       sources:
-        cSoil: cSoil/SoilGrids2/soilgrids2_cSoil.nc
+        cSoil: SoilGrids-2-0/ILAMB_ISRIC_SoilGrids-2-0_fx_cSoil_PI90_gr_v20260904.nc
       analyses:
         - bias
       use_uncertainty: true
@@ -287,4 +287,50 @@ Uncertainty:
       analyses:
         - bias
         - rmse
+      use_uncertainty: true
+
+  Soil Moisture 0m:
+    WangMao-2021-EC:
+      sources:
+        mrsol: WangMao-2021/ILAMB_ORNL_WangMao-2021_mon_mrsol_EC-ORS_gn_v20260903.nc
+      transforms:
+        - soil_moisture_to_vol_fraction
+        - select_depth:
+            value: 0.
+      analyses:
+        - bias
+      use_uncertainty: true
+
+    WangMao-2021-OLC:
+      sources:
+        mrsol: WangMao-2021/ILAMB_ORNL_WangMao-2021_mon_mrsol_OLC-ORS_gn_v20260903.nc
+      transforms:
+        - soil_moisture_to_vol_fraction
+        - select_depth:
+            value: 0.
+      analyses:
+        - bias
+      use_uncertainty: true
+
+  Soil Moisture 1m:
+    WangMao-2021-EC:
+      sources:
+        mrsol: WangMao-2021/ILAMB_ORNL_WangMao-2021_mon_mrsol_EC-ORS_gn_v20260903.nc
+      transforms:
+        - soil_moisture_to_vol_fraction
+        - select_depth:
+            value: 1.
+      analyses:
+        - bias
+      use_uncertainty: true
+
+    WangMao-2021-OLC:
+      sources:
+        mrsol: WangMao-2021/ILAMB_ORNL_WangMao-2021_mon_mrsol_OLC-ORS_gn_v20260903.nc
+      transforms:
+        - soil_moisture_to_vol_fraction
+        - select_depth:
+            value: 1.
+      analyses:
+        - bias
       use_uncertainty: true
