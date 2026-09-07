@@ -18,8 +18,9 @@ def build_uncertainty_comparison_dataframe(
 
 
 if __name__ == "__main__":
-    df = build_uncertainty_comparison_dataframe(Path("../ilamb/_build"))
-    print(df)
+    df = build_uncertainty_comparison_dataframe(Path("../ilamb/_build/Uncertainty"))
+    df.to_parquet(Path("../data/uncertainty.parquet"))
+    print(df.to_string())
 
     dfb = df[df.index.get_level_values(3) == "Bias"]
     dfr = df[df.index.get_level_values(3) == "RMSE"]
