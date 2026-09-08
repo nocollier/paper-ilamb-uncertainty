@@ -92,4 +92,5 @@ def by_var_dset(df: pd.DataFrame, path: Path | None = None):
 
 if __name__ == "__main__":
     df = pd.read_parquet("../data/uncertainty.parquet")
+    df = df[~df.index.get_level_values(0).str.endswith("Surface")]
     by_var_dset(df)

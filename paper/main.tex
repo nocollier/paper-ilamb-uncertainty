@@ -185,24 +185,62 @@ We use the same idea as in the bias score, where we aim to only penalize errors 
 	\label{fig:rmse}
 \end{figure}
 %
-While the equation may be complicated to read, the interpretation is straightforward to intuit in figure~\ref{fig:rmse} where we repeat the comparisons at the same two sites except the traces have been centralized. When computing $\varepsilon^p_{\mathrm{rmse}}(\bx)$ from equation~\eqref{e:rmse0}, the integral in the numerator is summing up the area between the red and black curve. In constrast, when computing $\varepsilon_{\mathrm{rmse}}(\bx)$ from equation~\eqref{e:rmse} only the light red shaded areas are included in the numerator's integral, leading to a discount in the total integrated error.
+The interpretation of equation~\eqref{e:rmse} is straightforward to intuit in figure~\ref{fig:rmse} where we repeat the comparisons at the same two sites except the traces have been centralized. When computing $\varepsilon^p_{\mathrm{rmse}}(\bx)$ from equation~\eqref{e:rmse0}, the integral in the numerator is summing up the area between the red and black curve. In constrast, when computing $\varepsilon_{\mathrm{rmse}}(\bx)$ from equation~\eqref{e:rmse} only the light red shaded areas are included in the numerator's integral, leading to a discount in the total integrated error.
 
-
+\clearpage
 \section{Datasets}\label{sec:data}
-Blah
+
+Blah.
 
 \subsection{Optimal Linear Combination}
-Blah
+
+As the commmunity has produced multiple reference datasets for a given variable, they have also worked to combine them to both improve the estimate as well as produce a measure of uncertainty casted as a variance among products. However, while such datasets are produced in an independent manner, they use much of the same observational data. This leads to a question of to what extent can these collection of products represent independent estimates?
+
+The Optimal Linear Combination technique (OLC) outlined in~\cite{Bishop_ClimDyn_20130801} has emerged as a means to transform an ensemble of gridded products to produce a mean and variance that have the same statistical relationship to observations. The OLC poses a constrained optimization problem where a series of weights blends the gridded products in a way that minimizes the mean square distance between each product and {\it in situ} data where available. The uncertainty is presented as the weighted standard deviation among products where the weights have been manipulated to ensure that the variance at sites matches the observational data.
+
+The DOLCE-1-0, LORA-1-0, and WangMao-2021(OLC) datasets (see table~\ref{t:olc}) employ this technique to form estimates for evapotranspiration (or latent heat), runoff, and soil moisture respectively. The suite of datasets known as CLASS-1-1 provide estimates formed by the same technique, but that simulaneuosly close the energy and water budget. Note that in addition to the variables list in table~\ref{t:olc}, CLASS-1-1 also provides and estimate of the change in water storage and ground heat flux, but as they have no analog in CMIP output, we omit them in this work.
+%
+\newcommand{\classvars}{precipitation ($\mathit{pr}$), evapotranspiration/latent heat ($\mathit{evspsbl}$/$\mathit{hfls}$), runoff ($\textit{mrro}$), sensible heat ($\textit{hfss}$), surface net radiation ($\textit{rns}$)}
+\begin{table}[ht]
+	\caption{Reference datasets generated using the optimal linear combination technique (OLC).}\label{t:olc}
+	\begin{tabular}{lp{4.3cm}p{4cm}}
+		\hline
+		Dataset           & Variables                               & References                                             \\
+		\hline
+		DOLCE-1-0         & evapotranspiration ($\mathit{evspsbl}$) & \cite{Hobeichi_HESS_20180218,Hobeichi_DOLCE_20210419}  \\
+		LORA-1-0          & runoff ($\textit{mrro}$)                & \cite{Hobeichi_HESS_20190219,Hobeichi_LORA_20191115}   \\
+		WangMao-2021(OLC) & soil moisture ($\mathit{mrsol}$)        & \cite{Wang_ESSD_20210907,Wang_WangMao-2021_20210101}   \\
+		CLASS-1-1         & \classvars                              & \cite{Hobeichi_JClim_20200301,Hobeichi_CLASS_20191115} \\
+		\hline
+	\end{tabular}
+\end{table}
 
 \subsection{CARDAMOM}
 Blah
 
-\subsection{How to encode uncertainty with CF conventions}
-
-\section{Experimental Setup}\label{sec:setup}
-
-\section{Results}\label{sec:results}
+\subsection{Others}
 Blah
+
+\subsection{How to encode uncertainty with CF conventions}
+Blah
+
+\section{Numerical Experiment and Results}\label{sec:results}
+
+In order to test the impact that the proposed methodological changes have on ILAMB bias and RMSE scores, we setup a numerical experiment where we run the ILAMB code using only the datasets that have some uncertainty encoded against a selection of CMIP6 models (BCC-ESM1, CanESM5, CESM2, E3SM-1-1, EC-Earth3-Veg, GFDL-ESM4, GISS-E2-1-G, IPSL-CM6A-LR, MIROC-ES2L, MPI-ESM1-2-LR, UKESM1-0-LL). These models were selected, not as an exhaustive list, but rather as a sample of possible models to draw sufficient conclusions about the impact of our methodological changes.
+
+We extracted score information from the ILAMB results and present it in figure~\ref{f:score} for bias and RMSE where appropriate. Each panel of the figure depicts a series of score pairs with and without considering uncertainty. While each pair represents a model, we leave them anonymous in this work as the aim is to analyze the methodological change and not draw conclusions about specific models.
+
+First, we observe that scores do not degrade. Each panel of figure~\ref{f:score} has the bottom right triangle shaded to emphasize that no score pair lies in a region which would imply a degradation in score. This feature is by design and allows us to treat datasets with and without uncertainty in one consistent framework. This also carries with it the consequence that in ILAMB, datasets without explicit uncertainty are assumed to have zero uncertainty. As scores only increase or stay the same, it may seem that we have blunted our measurement tool, leading to more models which appear to perform well. We propose an alternative interpretation that this formulation seeks to only penalize errors where we are certain about the reference data. This leads to score maps that can more skillfully point to areas where model improvements would have the most impact. From this point of view a good score rather reflects that the reference data has reached is limit of usefulness in constraining the model. This forms an important feedback loop to data providers that more accurate reference data is needed to make advancements.
+
+Second, for the reference and model data selected, there is no large change in model rankings. We emphasize this by including the Pearson correlation coefficient for each series in the bottom right of the plot as an indication of linearity. Near-ubiquitous strong linearity implies that while scores are different, the inclusion of uncertainty does not dramatically change our notion of the ranking of models. This  also suggests that while considering uncertainty is important for prioritizing model developments in regions where we are certain of large errors, we have not been purporting a false picture of performance by having previously ignored it. One notable exception to this observation is the panel showing soil moisture at 0 [m] with the WangMao-2021(OLC) data product where the Pearson correlation coefficient of the bias score is 0.545. In this product the surface uncertainty is quite large leading to substantial increases in the score (0.2 to 0.8). Such widespread large uncertainty appears to impact models differently, however with a spread of scores that remains tight. It could be argued that model performance with and without uncertainty remains similar across all models.
+
+We highlight that not all dataset/variables have been equally affected by our methodological changes. In figure~\ref{f:score}, the closer the point series are to the diagonal, the less affected the scores have been by including uncertainty. Consider the difference in the soil carbon across the SoilGrids2 and Wang2024 panels. The scores of SoilGrids2 are greatly affected by the inclusion of uncertainty. The values shift from 0.3-0.6 to 0.6-1.0. This is due to the uneven sampling of soil carbon data globally, leading to large uncertainty especially in areas where few cores have been extracted. In contrast, the Wang2024 product is a reconstruction over the continental United States and Alaska, where data is comparatively densly available. The resulting uncertainties are lower, which lead to small changes in score with these methodological changes.
+%
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=\textwidth]{../figs/composite.png}
+	\caption{A comparison of ILAMB bias (orange) and RMSE (purple) scores with and without uncertainty. In each panel, the bottom right triangle is shaded to emphasize that no score degrades with the inclusion of uncertainty. A Pearson correlation coefficient is included for each score as a measure of linearity, leading to the conclusion that the inclusion of uncertainty does not dramatically reverse our notion of the ranking of model scores.}\label{f:score}
+\end{figure}
 
 \clearpage
 \section*{Acknowledgments}\label{sec:ack}
@@ -211,6 +249,6 @@ This manuscript has been authored by UT-Battelle, LLC under Contract No. DE-AC05
 
 This research was supported through the Reducing Uncertainties in Biogeochemical Interactions through Synthesis and Computation Scientific Focus Area (RUBISCO SFA), which is sponsored by the Regional and Global Climate Modeling (RGCM) Program in the Climate and Environmental Sciences Division (CESD) of the Office of Biological and Environmental Research (BER) in the U.S.\ Department of Energy Office of Science.  Oak Ridge National Laboratory (ORNL) is managed by UT-Battelle, LLC for the U.S. Department of Energy under Contract No.\ DE-AC05-00OR22725. The National Center for Atmospheric Research (NCAR) is managed by the University Corporation for Atmospheric Research (UCAR) on behalf of the National Science Foundation (NSF).
 
-\bibliography{refs/Collier_JAMES_20181101,refs/Hobeichi_JClim_20200301}
+\bibliography{refs/Hobeichi_HESS_20180218,refs/Hobeichi_HESS_20190219,refs/Hobeichi_JClim_20200301,refs/Hobeichi_CLASS_20191115,refs/Hobeichi_DOLCE_20210419,refs/Collier_JAMES_20181101,refs/Bishop_ClimDyn_20130801,refs/Wang_WangMao-2021_20210101,refs/Hobeichi_LORA_20191115,refs/Wang_ESSD_20210907}
 
 \end{document}
