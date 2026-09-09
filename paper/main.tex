@@ -53,15 +53,9 @@ The meaning of uncertainty varies in the reference data.
 
 While more reference data products provide uncertainty estimates, there is not uniformity in what that uncertainty represents. In CLASS its blah while in CARDAMOM its blah. We shy away from uncertainty from method, such as in FLUXNET-MTE.
 
-Due to this ambiguity, we do not want to make methodological assumptions about (e.g. normally distributed) what the uncertainty constitutes. For this reason our methodology will adopt a simple "perfect in the envelope" paradigm.
+Due to this ambiguity, we do not want to make methodological assumptions about (e.g. normally distributed) what the uncertainty constitutes. For this reason our methodology will adopt a simple "perfect in the envelope" paradigm, meaning that if a model time trace falls within the reference data uncertainty range around its mean, then the models performance is indistruishable from a `perfect' model.
 
 It is not that we declare models perfect if in the envlope of uncertainty, it is rather that we are not comfortable reporting such areas as bad when our notion is so uncertain. These changes prevent modeler from assuming an error is their model and chasing down a bad lead.
-
-Goal: Incoporate uncertainty into the ILAMB scoring methods.
-
-\section{Methodology}\label{sec:method}
-
-The ILAMB scoring methodology aims to synthesize model performance with respect to a reference in several aspects including bias, root mean squared error (RMSE), annual cycle, and spatial distribution. The goal is to be comprehensive and provide a uniform high level summary of the performance of these models. To this end, we have developed expressions~\cite{Collier_JAMES_20181101} that synthesize the model performance in each aspect, reducing errors to a single \textit{score} that varies from 0 to 1, indicating poor and perfect performance respectively.
 
 In the present work, we wish to modify the scoring methodology for the bias and RMSE aspects to include notions of the reference uncertainty when present. We approach this change with four goals in mind:
 %
@@ -72,13 +66,17 @@ In the present work, we wish to modify the scoring methodology for the bias and 
 	\item For a given model location (or pixel), the proposed methodology should never degrade the score. The uncertainty should make us more conservative about judgements. This in turn also means that a perfect score no longer represents a flawless match to the reference data, but rather indicates a limit to the conclusions we can draw from a given reference dataset.
 \end{enumerate}
 
+\section{Methodology}\label{sec:method}
+
+The ILAMB scoring methodology aims to synthesize model performance with respect to a reference in several aspects including bias, root mean squared error (RMSE), annual cycle, and spatial distribution. The goal is to be comprehensive and provide a uniform high level summary of the performance of these models. To this end, we have developed expressions~\cite{Collier_JAMES_20181101} that synthesize the model performance in each aspect, reducing errors to a single \textit{score} that varies from 0 to 1, indicating poor and perfect performance respectively.
+
 As in~\cite{Collier_JAMES_20181101}, we discuss the analysis of a generalized variable $v(t,\bx)$ which we assume represents a piecewise discontinuous function of constants in space and time. This means that the temporal domain, represented by the variable $t$, is defined by the beginning $t_0$ and ending $t_f$ of time intervals and the spatial domain, represented by the variable $\bx$ (bolded to emphasize it is a vector quantity), represents the areas created by cell boundaries or the areas associated with data sites. A single overbar denotes a temporal mean, expressed as an integral,
 %
 \begin{equation}
 	\bar{v}(\bx) = \frac{1}{t_f-t_0} \int_{t_0}^{t_f} v(t,\bx)\ dt\label{e:mean}
 \end{equation}
 %
-The exposition below will also make use of \textit{centralized} versions of variables which we will denote by a hat symbol,
+The exposition below will also make use of centralized versions of variables which we will denote by a hat symbol,
 %
 \begin{equation}
 	\widehat{v}(t,\bx) = v(t,\bx)-\bar{v}(\bx)\label{e:center}
@@ -115,14 +113,14 @@ This means that we substract the mean reference uncertainty from the bias and on
 	\begin{subfigure}[t]{0.495\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{../figs/bias_moderate.png}
-		\caption{Moderate gains in bias score when the uncertainty is relatively low. Only the bias that falls outside the uncertainty envelope is penalized. Site chosen from central Canada.}
+		\caption{Relatively low uncertainty leads to moderate gains in bias score (0.696 to 0.872) as shown in equation~\eqref{e:biasA}. Only the bias that falls outside the uncertainty envelope is penalized.}
 		\label{fig:modbias}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[t]{0.495\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{../figs/bias_large.png}
-		\caption{Large gains in bias score as the latent heat is highly uncertain. As the bias falls within the uncertainty envelope, this site receives a perfect score. Site chosen from Indonesia.}
+		\caption{Even a large bias which falls within the uncertainty envelope leads to a perfect bias score (0.147 to 1.0) as shown in equation~\eqref{e:biasB}.}
 		\label{fig:bigbias}
 	\end{subfigure}
 	\caption{Sample illustrations of how uncertainty affects the ILAMB scoring methodology for the bias at particular grid cells. In each case the reference variable $v_{\mathrm{ref}}(t)$ is shown in black along with its uncertainty $\delta(t)$ shaded grey. The comparison variable $v_{\mathrm{com}}(t)$ is shown in red. The temporal mean of each is shown to the right of the plot and indicated by a bar over the corresponding variable.}
@@ -131,31 +129,37 @@ This means that we substract the mean reference uncertainty from the bias and on
 %
 To develop some intuition in how these formulas work and compare to the previous definitions, consider the following case study comparing the latent heat provided by the CLASS (\cite{Hobeichi_JClim_20200301}) dataset to that of CanESM5 compared at two locations. One location, site A, is in central Canada and corresponds to a place where the uncertainty is relatively low. The other location, site B, is in Indonesia and corresponds to a place with poor model characterization and high uncertainty. Two years of the time trace at both sites is shown in figure~\ref{fig:bias}.
 
-The traces for Site A are shown in figure~\ref{fig:modbias}. As we have selected values at a site, the dependence on $\bx$ has been dropped. While the model captures the major trends of the reference datasaet, there is a positive bias shown by the dashed lines to the right of the plot. However, there is also some reference uncertainty to consider also. If we harvest values from these datasets and substitute into equations~\eqref{e:bias0},~\eqref{e:bias}, and \eqref{e:score}, we get the following scores.
+The time series for Site A are shown in figure~\ref{fig:modbias}. As we have selected values at a site, the dependence on $\bx$ has been dropped. While the model captures the major trends of the reference datasaet, there is a positive bias shown by the dashed lines to the right of the plot. However, there is also some reference uncertainty to consider also. If we harvest values from these datasets and substitute into equations~\eqref{e:bias0},~\eqref{e:bias}, and \eqref{e:score}, we get the following scores.
 %
-\begin{align*}
-	\overline{v_{\mathrm{ref}}}                 & = 32.4                                                           \\
-	\overline{v_{\mathrm{com}}}                 & = 44.3                                                           \\
-	\mathrm{std}_t\left(v_{\mathrm{ref}}\right) & = 32.8                                                           \\
-	\overline{\delta}                           & = 7.378                                                          \\
-	\varepsilon^{p}                             & = \frac{\left| 44.3 - 32.4 \right|}{32.8}                = 0.363 \\
-	\varepsilon                                 & = \frac{\max(\left| 44.3 - 32.4 \right| - 7.4,0)}{32.8}  = 0.137 \\
-	s^{p}_{\mathrm{bias}}                       & = e^{-0.363} = 0.696                                             \\
-	s_{\mathrm{bias}}                           & = e^{-0.137} = 0.872
-\end{align*}
+\begin{subequations}
+	\label{e:biasA}
+	\begin{align}
+		\overline{v_{\mathrm{ref}}}                 & = 32.4                                                           \\
+		\overline{v_{\mathrm{com}}}                 & = 44.3                                                           \\
+		\mathrm{std}_t\left(v_{\mathrm{ref}}\right) & = 32.8                                                           \\
+		\overline{\delta}                           & = 7.378                                                          \\
+		\varepsilon^{p}                             & = \frac{\left| 44.3 - 32.4 \right|}{32.8}                = 0.363 \\
+		\varepsilon                                 & = \frac{\max(\left| 44.3 - 32.4 \right| - 7.4,0)}{32.8}  = 0.137 \\
+		s^{p}_{\mathrm{bias}}                       & = e^{-0.363} = 0.696                                             \\
+		s_{\mathrm{bias}}                           & = e^{-0.137} = 0.872
+	\end{align}
+\end{subequations}
 %
 So by also considering the reference uncertainty, our score in this location has changed from 0.696 to 0.872. In constrast, consider the traces for site B shown in figure~\ref{fig:bigbias}. We can extract data from these time traces and make the same comparison as with site A.
 %
-\begin{align*}
-	\overline{v_{\mathrm{ref}}}                 & = 103.8                                                       \\
-	\overline{v_{\mathrm{com}}}                 & = 123.0                                                       \\
-	\mathrm{std}_t\left(v_{\mathrm{ref}}\right) & = 10.0                                                        \\
-	\overline{\delta}                           & = 24.6                                                        \\
-	\varepsilon^{p}                             & = \frac{\left| 123- 103.8 \right|}{10.0}               = 1.92 \\
-	\varepsilon                                 & = \frac{\max(\left| 123-103.8\right| - 24.6,0)}{10.0}  = 0    \\
-	s^{p}_{\mathrm{bias}}                       & = e^{-1.92} = 0.147                                           \\
-	s_{\mathrm{bias}}                           & = e^{0} = 1
-\end{align*}
+\begin{subequations}
+	\label{e:biasB}
+	\begin{align}
+		\overline{v_{\mathrm{ref}}}                 & = 103.8                                                       \\
+		\overline{v_{\mathrm{com}}}                 & = 123.0                                                       \\
+		\mathrm{std}_t\left(v_{\mathrm{ref}}\right) & = 10.0                                                        \\
+		\overline{\delta}                           & = 24.6                                                        \\
+		\varepsilon^{p}                             & = \frac{\left| 123- 103.8 \right|}{10.0}               = 1.92 \\
+		\varepsilon                                 & = \frac{\max(\left| 123-103.8\right| - 24.6,0)}{10.0}  = 0    \\
+		s^{p}_{\mathrm{bias}}                       & = e^{-1.92} = 0.147                                           \\
+		s_{\mathrm{bias}}                           & = e^{0} = 1
+	\end{align}
+\end{subequations}
 %
 The model in this case does a poor job at capturing the mean behavior of the reference data leading to a significant positive bias and a low score of 0.147. However, once we consider how uncertain the reference data is in this location, this score is improved to 1.0. This does not mean that the model is perfect or that there is no more work to be done in improving parameterizations. It rather means that we have reached the interpretative limit of what this dataset can tell us in this location.
 %
@@ -214,7 +218,7 @@ The interpretation of equation~\eqref{e:rmse} is straightforward to intuit in fi
 \clearpage
 \section{Datasets}\label{sec:data}
 
-Blah.
+While there are relatively few reference datasets that come with explicit measures of uncertainty, the number is growing. In this section we will discuss these datasets starting with grouping datasets which follow the same methodology and ending with unique products, highlighting the source of uncertainty.
 
 \subsection{Optimal Linear Combination}
 
@@ -243,7 +247,9 @@ The DOLCE-1-0, LORA-1-0, and WangMao-2021(OLC) datasets (see table~\ref{t:olc}) 
 Blah
 
 \subsection{Others}
-Blah
+
+\paragraph*{Fluxnet-2015}
+The two methods are independent, making their consistency an indicator of the robustness of the estimates. Without a context in which they are being used, it is impossible to give a-priori preference to one or the other. Our suggestion is to use both daytime (DT) and nighttime (NT) variables and consider their difference as uncertainty.
 
 \subsection{How to encode uncertainty with CF conventions}
 Blah
@@ -254,7 +260,7 @@ In order to test the impact that the proposed methodological changes have on ILA
 
 We extracted score information from the ILAMB results and present it in figure~\ref{f:score} for bias and RMSE where appropriate. Each panel of the figure depicts a series of score pairs with and without considering uncertainty. While each pair represents a model, we leave them anonymous in this work as the aim is to analyze the methodological change and not draw conclusions about specific models.
 
-First, we observe that scores do not degrade. Each panel of figure~\ref{f:score} has the bottom right triangle shaded to emphasize that no score pair lies in a region which would imply a degradation in score. This feature is by design and allows us to treat datasets with and without uncertainty in one consistent framework. This also carries with it the consequence that in ILAMB, datasets without explicit uncertainty are assumed to have zero uncertainty. As scores only increase or stay the same, it may seem that we have blunted our measurement tool, leading to more models which appear to perform well. We propose an alternative interpretation that this formulation seeks to only penalize errors where we are certain about the reference data. This leads to score maps that can more skillfully point to areas where model improvements would have the most impact. From this point of view a good score rather reflects that the reference data has reached is limit of usefulness in constraining the model. This forms an important feedback loop to data providers that more accurate reference data is needed to make advancements.
+First, we observe that scores do not degrade. Each panel of figure~\ref{f:score} has the bottom right triangle shaded to emphasize that no score pair lies in a region which would imply a degradation in score. This feature is by design and allows us to treat datasets with and without uncertainty in one consistent framework. This also carries with it the consequence that in ILAMB, datasets without explicit uncertainty are assumed to have zero uncertainty. As scores only increase or stay the same, it may seem that we have blunted our measurement tool, leading to more models which appear to perform well. We propose an alternative interpretation that this formulation seeks to only penalize errors where we are certain about the reference data. This leads to score maps that can more skillfully point to areas where model improvements would have the most impact. From this point of view a good score rather reflects that the reference data has reached is limit of usefulness in constraining the model. This forms an important feedback loop to data providers that more accurate reference data is needed to make useful comparisons.
 
 Second, for the reference and model data selected, there is no large change in model rankings. We emphasize this by including the Pearson correlation coefficient for each series in the bottom right of the plot as an indication of linearity. Near-ubiquitous strong linearity implies that while scores are different, the inclusion of uncertainty does not dramatically change our notion of the ranking of models. This  also suggests that while considering uncertainty is important for prioritizing model developments in regions where we are certain of large errors, we have not been purporting a false picture of performance by having previously ignored it. One notable exception to this observation is the panel showing soil moisture at 0 [m] with the WangMao-2021(OLC) data product where the Pearson correlation coefficient of the bias score is 0.545. In this product the surface uncertainty is quite large leading to substantial increases in the score (0.2 to 0.8). Such widespread large uncertainty appears to impact models differently, however with a spread of scores that remains tight. It could be argued that model performance with and without uncertainty remains similar across all models.
 
