@@ -220,7 +220,7 @@ The interpretation of equation~\eqref{e:rmse} is straightforward to intuit in fi
 
 While there are relatively few reference datasets that come with explicit measures of uncertainty, the number is growing. In this section we will discuss these datasets starting with grouping datasets which follow the same methodology and ending with unique products, highlighting the source of uncertainty.
 
-\subsection{Optimal Linear Combination}
+\subsection{Optimal Linear Combination}\label{s:olc}
 
 As the commmunity has produced multiple reference datasets for a given variable, they have also worked to combine them to both improve the estimate as well as produce a measure of uncertainty casted as a variance among products. However, while such datasets are produced in an independent manner, they use much of the same observational data. This leads to a question of to what extent can these collection of products represent independent estimates?
 
@@ -243,13 +243,29 @@ The DOLCE-1-0, LORA-1-0, and WangMao-2021(OLC) datasets (see table~\ref{t:olc}) 
 	\end{tabular}
 \end{table}
 
+\subsection{World Ocean Atlas (WOA)}
+Blah
+
 \subsection{CARDAMOM}
 Blah
 
 \subsection{Others}
 
 \paragraph*{Fluxnet-2015}
-The two methods are independent, making their consistency an indicator of the robustness of the estimates. Without a context in which they are being used, it is impossible to give a-priori preference to one or the other. Our suggestion is to use both daytime (DT) and nighttime (NT) variables and consider their difference as uncertainty.
+
+The Fluxnet-2015 dataset~\cite{Pastorello_SciData_20200709} consists of measurements taken at a collection of eddy covariance towers. In the context of carbon cycle variables on the monthly scale which we use in ILAMB, they provide a means for estimating uncertainty in gross primary productivity ($\mathit{gpp}$) and ecosystem respiration ($\mathit{reco}$). Both quantities are computed by the data providers from measurement values and depend on two independent CO$_2$ flux partitioning methods (daytime and nighttime). Guidance from the supplementary material suggests using an average among the partitioning methods as the variable and their difference as uncertainty.
+
+\paragraph*{SoilGrids2}
+
+The SoilGrids2 dataset~\cite{Poggio_SOIL_20210614} uses quantile regression forests to create a regressor for soil carbon ($\mathit{cSoil}$) from 400 global environmental covariates and 240,000 locations with soil carbon data. In contrast to random forests, the quantile regression forest method produces an estimate of quantiles of soil carbon, leading to a natural means of reporting uncertainty. The authors include the 90$^{\mathrm{th}}$ prediction interval as a measure of uncertainty.
+
+\paragraph*{Wang2024}
+
+The Wang2024 dataset \cite{Wang_JGRB_20240201,Wang_Wang2024_20230619} produces maps of the soil carbon stocks ($\mathit{cSoil}$) across the continental United States and Alaska by a combination of $k$-means clustering and random forests. The authors grouped soil organic carbon measurements into 20 regions defined by similar environmental covariables. Then a random forest model is constructed for each region, trained on the observations from that region and then applied to other cells without observational coverage. The uncertainties of these estimates are formed from the coefficients of variation of the predictions from each random forest model.
+
+\paragraph*{WangMao-2021(EC)}
+
+In addition to the WangMao-2021(OLC) soil moisture dataset described in section~\ref{s:olc}, the authors \cite{Wang_ESSD_20210907,Wang_WangMao-2021_20210101} also present a dataset using a technique known as emergent constraints.
 
 \subsection{How to encode uncertainty with CF conventions}
 Blah
@@ -279,6 +295,6 @@ This manuscript has been authored by UT-Battelle, LLC under Contract No. DE-AC05
 
 This research was supported through the Reducing Uncertainties in Biogeochemical Interactions through Synthesis and Computation Scientific Focus Area (RUBISCO SFA), which is sponsored by the Regional and Global Climate Modeling (RGCM) Program in the Climate and Environmental Sciences Division (CESD) of the Office of Biological and Environmental Research (BER) in the U.S.\ Department of Energy Office of Science.  Oak Ridge National Laboratory (ORNL) is managed by UT-Battelle, LLC for the U.S. Department of Energy under Contract No.\ DE-AC05-00OR22725. The National Center for Atmospheric Research (NCAR) is managed by the University Corporation for Atmospheric Research (UCAR) on behalf of the National Science Foundation (NSF).
 
-\bibliography{refs/Hobeichi_HESS_20180218,refs/Hobeichi_HESS_20190219,refs/Hobeichi_JClim_20200301,refs/Hobeichi_CLASS_20191115,refs/Hobeichi_DOLCE_20210419,refs/Collier_JAMES_20181101,refs/Bishop_ClimDyn_20130801,refs/Wang_WangMao-2021_20210101,refs/Hobeichi_LORA_20191115,refs/Wang_ESSD_20210907}
+\bibliography{refs/abbrev,refs/Collier_JAMES_20181101,refs/Wang_Wang2024_20230619,refs/Wang_JGRB_20240201,refs/Hobeichi_DOLCE_20210419,refs/Hobeichi_JClim_20200301,refs/Hobeichi_HESS_20180218,refs/Wang_ESSD_20210907,refs/Pastorello_SciData_20200709,refs/Poggio_SOIL_20210614,refs/Bishop_ClimDyn_20130801,refs/Wang_WangMao-2021_20210101,refs/Hobeichi_HESS_20190219,refs/Hobeichi_CLASS_20191115,refs/Hobeichi_LORA_20191115}
 
 \end{document}
