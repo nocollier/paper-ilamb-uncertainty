@@ -4,6 +4,7 @@
 \usepackage{subcaption}
 \usepackage{amsmath}
 \usepackage{hyperref}
+\usepackage[table]{xcolor}
 \hypersetup{colorlinks=true,citecolor=black,filecolor=black,linkcolor=black,urlcolor=black,breaklinks=true}
 \usepackage{natbib}
 \bibpunct{(}{)}{;}{a}{,}{,~}
@@ -33,35 +34,20 @@
 \end{abstract}
 
 \section{Introduction}\label{sec:intro}
-This is a paper about including reference data uncertainty when synthesizing model performance. \cite{Collier_JAMES_20181101}
 
-Modelers use benchmarking tools to evaulate model predictions with respect to reference data.
+This is a paper about including reference data uncertainty when synthesizing model performance. In~\cite{Collier_JAMES_20181101} we detailed a methodology developed by and employed in the International Land Model Benchmarking (ILAMB) effort. While the ideas presented here will be presented in the context of our previous work, we believe the principles presented will be of value to the broader benchmarking community.
 
-To evaluate we calculate bias and RMSE (and other quantities) between models and reference data.
+Modelers and analysts use benchmarking tools and software (cite[ESMValTool,PMP,others]) to evaulate model predictions with respect to reference data. To evaluate performance these packages calculate metrics such as bias and RMSE among others representing mismatch between models and reference data. While we frequently attribute the cause of a high bias or RMSE to a departure of the model data from the reference, it can also be because of reference data uncertainty. This is an important detail to consider as models errors lead model developers to focus on parameterization improvements. If we report large errors in areas where the reference data is uncertain, then we mislead this develpoment.
 
-More philosophy about the importance or usefulness of synthesis.
+To address this problem we propose a change to the ILAMB methodology that accounts for reference uncertainty when given. In section~\ref{t:datasets} we will describe a collection of global or continental scale datasets that provide explicit measures of uncertainty. However, we note that the while more datasets express uncertainty, the source or object of that uncertainty varies. In some cases, these reference datasets are built by merging multiple sources and the uncertainty relates to the variance among these products. In others, samples collected in sparse and discrete locations are extended to the globe by mapping to representative regions and the uncertainty is represented as the spread among measurements per region.
 
-While we frequently attribute the cause of a high bias or RMSE to a departure of the model data from the reference, it can also be because of reference data uncertainty.
+Due to this ambiguity, we do not want to make structural assumptions about what the uncertainty constitutes. For this reason our methodology will adopt a simple ``perfect in the envelope'' paradigm. This means that if a model variable time series falls within the reference data uncertainty range, then the models performance is indistruishable from a ``perfect'' model. While a useful phrasing shorthand, it is not that we declare models flawless if in the envlope of uncertainty. It is rather that we do not wish to lead model developers to resolve an error about which we are not certain is really an error.
 
-This is important because errors can lead model developers to focus on parameterization improvements. If we report large errors in areas where the reference data is uncertain, then we mislead this develpoment.
-
-To address this problem we propose a change to the ILAMB methodology that accounts for reference uncertainty when given.
-
-While there are not a lot of global scale reference datasets that include uncertainty, there are some. However, what they mean by providing uncertainty varies.
-
-The meaning of uncertainty varies in the reference data.
-
-While more reference data products provide uncertainty estimates, there is not uniformity in what that uncertainty represents. In CLASS its blah while in CARDAMOM its blah. We shy away from uncertainty from method, such as in FLUXNET-MTE.
-
-Due to this ambiguity, we do not want to make methodological assumptions about (e.g. normally distributed) what the uncertainty constitutes. For this reason our methodology will adopt a simple "perfect in the envelope" paradigm, meaning that if a model time trace falls within the reference data uncertainty range around its mean, then the models performance is indistruishable from a `perfect' model.
-
-It is not that we declare models perfect if in the envlope of uncertainty, it is rather that we are not comfortable reporting such areas as bad when our notion is so uncertain. These changes prevent modeler from assuming an error is their model and chasing down a bad lead.
-
-In the present work, we wish to modify the scoring methodology for the bias and RMSE aspects to include notions of the reference uncertainty when present. We approach this change with four goals in mind:
+In this paper, we propse a modification to the ILAMB scoring methodology for the bias and RMSE aspects to include notions of the reference uncertainty when present. We approach this change with four philosophical goals in mind:
 %
 \begin{enumerate}
 	\item As the uncertainty tends to zero, the proposed additions should reduce to the original ILAMB methodoloy for each aspect. While there are an increasing number of reference datasets with some measure of uncertainty, the majority do not. Layering in uncertainty in this way lets us understand and interpret results with and without uncertainty within the same framework.
-	\item As the meaning or intrepretation of \textit{uncertainty} varies in each data product, we should use a simple approach and make no assumptions about normality.
+	\item As the meaning or intrepretation of uncertainty varies in each data product, we should use a simple approach and make no assumptions about its structure.
 	\item The methodological changes should only affect how we synthesize errors (score) and not affect raw error or other scalars we report.
 	\item For a given model location (or pixel), the proposed methodology should never degrade the score. The uncertainty should make us more conservative about judgements. This in turn also means that a perfect score no longer represents a flawless match to the reference data, but rather indicates a limit to the conclusions we can draw from a given reference dataset.
 \end{enumerate}
@@ -218,7 +204,57 @@ The interpretation of equation~\eqref{e:rmse} is straightforward to intuit in fi
 \clearpage
 \section{Datasets}\label{sec:data}
 
-While there are relatively few reference datasets that come with explicit measures of uncertainty, the number is growing. In this section we will discuss these datasets starting with grouping datasets which follow the same methodology and ending with unique products, highlighting the source of uncertainty.
+While there are relatively few reference datasets that provide some explicit measure of uncertainty, the number is growing. In this section we will discuss these datasets starting with those produced by the same methodology and ending with unique products, highlighting the source of uncertainty in each case. We summarize the datasets included in this paper along with the variables available in each in table~\ref{t:datasets}.
+\newcommand{\classvars}{
+	precipitation ($\mathit{pr}$),
+	evapotranspiration/latent heat ($\mathit{evspsbl}$/$\mathit{hfls}$),
+	runoff ($\mathit{mrro}$),
+	sensible heat ($\mathit{hfss}$),
+	surface net radiation ($\mathit{rns}$)
+}
+\newcommand{\cardvars}{
+	soil carbon ($\mathit{cSoil}$),
+	evapotranspiration ($\mathit{evspsbl}$),
+	carbon from fire ($\mathit{fFire}$),
+	gross primary productivity ($\mathit{gpp}$),
+	leaf area index ($\mathit{lai}$),
+	surface runoff ($\mathit{mrros}$),
+	runoff ($\mathit{mrro}$),
+	net biome production ($\mathit{nbp}$),
+	net ecosystem exchange ($\mathit{nee}$),
+	autotrophic respiration ($\mathit{ra}$),
+	heterotrophic respiration ($\mathit{rh}$),
+	surface snow ($\mathit{snw}$),
+	transpiration ($\mathit{tran}$)
+}
+\newcommand{\woavars}{
+	oxygen ($\mathit{o2}$),
+	nitrate ($\mathit{no3}$),
+	phosphate ($\mathit{po4}$),
+	silicate ($\mathit{si}$),
+	temperature ($\mathit{thetao}$)
+}
+\begin{table}[ht]
+	\caption{A selection of global or continental scale reference datasets which include some measure of uncertainty.}\label{t:datasets}
+	\rowcolors{1}{white}{gray!15}
+	\begin{tabular}{llp{7cm}}
+		\hline
+		Section            & Dataset           & Variables                                                                            \\
+		\hline
+		\ref{s:cardamom}   & CARDAMOM          & \cardvars                                                                            \\
+		\ref{s:olc}        & CLASS-1-1         & \classvars                                                                           \\
+		\ref{s:fbnf}       & Davies-Barnard    & biological nitrogen fixation ($\mathit{fBNF}$)                                       \\
+		\ref{s:olc}        & DOLCE-1-0         & evapotranspiration ($\mathit{evspsbl}$)                                              \\
+		\ref{s:fluxnet}    & Fluxnet-2015      & gross primary productivity ($\mathit{gpp}$), ecosystem respiration ($\mathit{reco}$) \\
+		\ref{s:olc}        & LORA-1-0          & runoff ($\mathit{mrro}$)                                                             \\
+		\ref{s:soilgrids2} & SoilGrids2        & soil carbon ($\mathit{cSoil}$)                                                       \\
+		\ref{s:olc}        & WangMao-2021(OLC) & soil moisture ($\mathit{mrsol}$)                                                     \\
+		\ref{s:ec}         & WangMao-2021(EC)  & soil moisture ($\mathit{mrsol}$)                                                     \\
+		\ref{s:wang}       & Wang2024          & soil carbon ($\mathit{cSoil}$)                                                       \\
+		\ref{s:woa}        & WOA-23            & \woavars                                                                             \\
+		\hline
+	\end{tabular}
+\end{table}
 
 \subsection{Optimal Linear Combination}\label{s:olc}
 
@@ -226,49 +262,59 @@ As the commmunity has produced multiple reference datasets for a given variable,
 
 The Optimal Linear Combination technique (OLC) outlined in~\cite{Bishop_ClimDyn_20130801} has emerged as a means to transform an ensemble of gridded products to produce a mean and variance that have the same statistical relationship to observations. The OLC poses a constrained optimization problem where a series of weights blends the gridded products in a way that minimizes the mean square distance between each product and {\it in situ} data where available. The uncertainty is presented as the weighted standard deviation among products where the weights have been manipulated to ensure that the variance at sites matches the observational data.
 
-The DOLCE-1-0, LORA-1-0, and WangMao-2021(OLC) datasets (see table~\ref{t:olc}) employ this technique to form estimates for evapotranspiration (or latent heat), runoff, and soil moisture respectively. The suite of datasets known as CLASS-1-1 provide estimates formed by the same technique, but that simulaneuosly close the energy and water budget. Note that in addition to the variables list in table~\ref{t:olc}, CLASS-1-1 also provides and estimate of the change in water storage and ground heat flux, but as they have no analog in CMIP output, we omit them in this work.
-%
-\newcommand{\classvars}{precipitation ($\mathit{pr}$), evapotranspiration/latent heat ($\mathit{evspsbl}$/$\mathit{hfls}$), runoff ($\textit{mrro}$), sensible heat ($\textit{hfss}$), surface net radiation ($\textit{rns}$)}
-\begin{table}[ht]
-	\caption{Reference datasets generated using the optimal linear combination technique (OLC).}\label{t:olc}
-	\begin{tabular}{lp{4.3cm}p{4cm}}
-		\hline
-		Dataset           & Variables                               & References                                             \\
-		\hline
-		DOLCE-1-0         & evapotranspiration ($\mathit{evspsbl}$) & \cite{Hobeichi_HESS_20180218,Hobeichi_DOLCE_20210419}  \\
-		LORA-1-0          & runoff ($\textit{mrro}$)                & \cite{Hobeichi_HESS_20190219,Hobeichi_LORA_20191115}   \\
-		WangMao-2021(OLC) & soil moisture ($\mathit{mrsol}$)        & \cite{Wang_ESSD_20210907,Wang_WangMao-2021_20210101}   \\
-		CLASS-1-1         & \classvars                              & \cite{Hobeichi_JClim_20200301,Hobeichi_CLASS_20191115} \\
-		\hline
-	\end{tabular}
-\end{table}
+The DOLCE-1-0 (\cite{Hobeichi_HESS_20180218,Hobeichi_DOLCE_20210419}), LORA-1-0 (\cite{Hobeichi_HESS_20190219,Hobeichi_LORA_20191115}), and WangMao-2021(OLC) (\cite{Wang_ESSD_20210907,Wang_WangMao-2021_20210101}) datasets employ this technique to form estimates for evapotranspiration, runoff, and soil moisture respectively. The suite of datasets known as CLASS-1-1 provide estimates formed by the same technique, but that simulaneuosly close the energy and water budget. Note that in addition to the variables list in table~\ref{t:datasets}, CLASS-1-1 (\cite{Hobeichi_JClim_20200301,Hobeichi_CLASS_20191115}) also provides and estimate of the change in water storage and ground heat flux, but as they have no analog in CMIP output, we omit them in this work.
 
-\subsection{World Ocean Atlas (WOA)}
-Blah
-
-\subsection{CARDAMOM}
-Blah
-
-\subsection{Others}
-
-\paragraph*{Fluxnet-2015}
+\subsection{Fluxnet-2015}\label{s:fluxnet}
 
 The Fluxnet-2015 dataset~\cite{Pastorello_SciData_20200709} consists of measurements taken at a collection of eddy covariance towers. In the context of carbon cycle variables on the monthly scale which we use in ILAMB, they provide a means for estimating uncertainty in gross primary productivity ($\mathit{gpp}$) and ecosystem respiration ($\mathit{reco}$). Both quantities are computed by the data providers from measurement values and depend on two independent CO$_2$ flux partitioning methods (daytime and nighttime). Guidance from the supplementary material suggests using an average among the partitioning methods as the variable and their difference as uncertainty.
 
-\paragraph*{SoilGrids2}
+\subsection{Davies-Barnard}\label{s:fbnf}
+
+In \cite{DaviesBarnard_GBC_20200209} the authors create a global estimate of the biological nitrogen fixation by reviewing 300 papers and books and collecting field measurements including location and vegetation type. The authors use these data along with a land cover map to create an approximate global map of the fixation where the uncertainty is defined by the first and third quartile of measurements in a given land cover type.
+
+\subsection{SoilGrids2}\label{s:soilgrids2}
 
 The SoilGrids2 dataset~\cite{Poggio_SOIL_20210614} uses quantile regression forests to create a regressor for soil carbon ($\mathit{cSoil}$) from 400 global environmental covariates and 240,000 locations with soil carbon data. In contrast to random forests, the quantile regression forest method produces an estimate of quantiles of soil carbon, leading to a natural means of reporting uncertainty. The authors include the 90$^{\mathrm{th}}$ prediction interval as a measure of uncertainty.
 
-\paragraph*{Wang2024}
+\subsection{Wang2024}\label{s:wang}
 
 The Wang2024 dataset \cite{Wang_JGRB_20240201,Wang_Wang2024_20230619} produces maps of the soil carbon stocks ($\mathit{cSoil}$) across the continental United States and Alaska by a combination of $k$-means clustering and random forests. The authors grouped soil organic carbon measurements into 20 regions defined by similar environmental covariables. Then a random forest model is constructed for each region, trained on the observations from that region and then applied to other cells without observational coverage. The uncertainties of these estimates are formed from the coefficients of variation of the predictions from each random forest model.
 
-\paragraph*{WangMao-2021(EC)}
+\subsection{WangMao-2021(EC)}\label{s:ec}
 
-In addition to the WangMao-2021(OLC) soil moisture dataset described in section~\ref{s:olc}, the authors \cite{Wang_ESSD_20210907,Wang_WangMao-2021_20210101} also present a dataset using a technique known as emergent constraints.
+In addition to the WangMao-2021(OLC) soil moisture dataset described in section~\ref{s:olc}, the authors \cite{Wang_ESSD_20210907,Wang_WangMao-2021_20210101} also present a dataset using a technique known as emergent constraints. The authors build a multilinear model mapping the anomlies of temperature and precipitation to those of the soil carbon where measurements are present. Then a gridded map of soil mooisture was created using a mean climatology a a base, and applying the anomaly model where a statistically significant relationship exists. The uncertainty provided in this product consists of the standard deviation of the linear regression where the emergent relationships exist, and otherwise the range of the source soil moisture products. Note that while several variants are presented in \cite{Wang_ESSD_20210907}, we present results for the dataset blended using OLS datasets (offline land surface models, reanalysis, satellite).
 
-\subsection{How to encode uncertainty with CF conventions}
-Blah
+\subsection{World Ocean Atlas}\label{s:woa}
+
+
+The historical oceanographic temperature profile data from bottle samples (OSD, measured by Reversing thermometers), Mechanical Bathy-thermographs (MBT), ship-deployed Conductivity-Temperature-Depth packages (CTD), Digital Bathythermograph (DBT), Expendable Bathythermographs (XBT), profiling floats (PFL), moored (MRB) and drifting (DRB) buoys, gliders (GLD), undulating oceanographic recorder (UOR), pinniped mounted CTD sensors (APB), and surface only data (SUR) used in this project were obtained from the NCEI archives and include all data gathered as a result of the GODAR and WOD projects.
+
+All of the in situ oceanographic O2 data collected in the 1965 and 2022 time period used in this atlas were obtained from the NCEI/WDS-Oceanography long-term data archives and include all data gathered as a result of the IODE Global Oceanographic Data Archeology and Rescue (GODAR) and WOD activities.
+The standard error of the mean was computed by dividing the standard deviation by the square root of the number of observations in each grid box.
+
+Historical and recent oceanographic nutrient data used in this atlas were obtained from the NCEI archives, WDS-Oceanography, GODAR, International Oceanographic Data and Information Exchange (IODE) of the Intergovernmental Oceanographic Commission (IOC), and worldwide ocean data research gathered as a result of IODE WOD project managed by NOAA. The majority of the nutrient data used in this atlas were typically obtained by means of photometric analysis of serial (discrete) samples using manual or Continuous Flow Analysis (CFA).
+
+We refer to the discrete water sample dataset in WOD23 as Ocean Station Data (OSD). Typically, each profile in the OSD dataset consists of 1 to 36 discrete water sample measurements collected at various depths between the surface and the ocean bottom using Nansen, Niskin, and CTD-rosette samplers.
+
+A rough measure of the uncertainty or precision of the climatological objectively analyzed fields can be obtained by quantifying their deviation from the statistical nutrient mean fields at all grids and depths. WOA23 includes fields of the deviation of the statistical mean from the climatological mean at each 1° square at each standard depth. The deviations also reflect the combined effects of data coverage, depth interpolation, and smoothing by the response function (Table 1.3, Figure 1.2).
+
+
+
+
+
+
+\subsection{CARDAMOM}\label{s:cardamom}
+
+{\color{blue}
+	Should we drop CARDAMOM from this paper?
+	\begin{itemize}
+		\item I included it originally to make the strongest case that our methodology behaves as we anticipate. Including CARDAMOM certainly strengthens that point. They have many variables, some of which we have no other reference data.
+		\item After looking through the results (figure 3), they do not really tell a useful story beyond what our other datasets do and they possibly raise more questions that we would need to explain. For example, the soil carbon comparisons are poor.
+		\item Removing them would leave us with 21 panels in figure 3, making it easer to parse the information without weakening our position.
+		\item Given that CARDAMOM is new to comparisons with ILAMB, perhaps it is better to leave that to a separate paper where the results can be explored more in detail.
+	\end{itemize}
+}
+
 
 \section{Numerical Experiment and Results}\label{sec:results}
 
@@ -295,6 +341,14 @@ This manuscript has been authored by UT-Battelle, LLC under Contract No. DE-AC05
 
 This research was supported through the Reducing Uncertainties in Biogeochemical Interactions through Synthesis and Computation Scientific Focus Area (RUBISCO SFA), which is sponsored by the Regional and Global Climate Modeling (RGCM) Program in the Climate and Environmental Sciences Division (CESD) of the Office of Biological and Environmental Research (BER) in the U.S.\ Department of Energy Office of Science.  Oak Ridge National Laboratory (ORNL) is managed by UT-Battelle, LLC for the U.S. Department of Energy under Contract No.\ DE-AC05-00OR22725. The National Center for Atmospheric Research (NCAR) is managed by the University Corporation for Atmospheric Research (UCAR) on behalf of the National Science Foundation (NSF).
 
-\bibliography{refs/abbrev,refs/Collier_JAMES_20181101,refs/Wang_Wang2024_20230619,refs/Wang_JGRB_20240201,refs/Hobeichi_DOLCE_20210419,refs/Hobeichi_JClim_20200301,refs/Hobeichi_HESS_20180218,refs/Wang_ESSD_20210907,refs/Pastorello_SciData_20200709,refs/Poggio_SOIL_20210614,refs/Bishop_ClimDyn_20130801,refs/Wang_WangMao-2021_20210101,refs/Hobeichi_HESS_20190219,refs/Hobeichi_CLASS_20191115,refs/Hobeichi_LORA_20191115}
+\bibliography{refs/abbrev,refs/Wang_ESSD_20210907,refs/Hobeichi_DOLCE_20210419,refs/Hobeichi_LORA_20191115,refs/Xu_SciAdv_20210702,refs/Hobeichi_HESS_20180218,refs/Pastorello_SciData_20200709,refs/Collier_JAMES_20181101,refs/Xu_XuSaatchi2021_20210518,refs/DaviesBarnard_GBC_20200209,refs/Hobeichi_HESS_20190219,refs/Wang_JGRB_20240201,refs/Wang_Wang2024_20230619,refs/Poggio_SOIL_20210614,refs/Hobeichi_JClim_20200301,refs/Bishop_ClimDyn_20130801,refs/Wang_WangMao-2021_20210101,refs/Hobeichi_CLASS_20191115}
+
+{\color{blue}
+	\section*{Appendix}
+
+	We would like to encourage data providers to include notions of uncertainty explicityly with the datasets they produce. For example, in the biomass dataset described in~\cite{Xu_SciAdv_20210702}, figure~S7(A) depicts a pixel uncertainty yet no data is present in the accompanying dataset~\cite{Xu_XuSaatchi2021_20210518}. Such data is useful to the community and so we will describe the CF conventions.
+	...
+
+}
 
 \end{document}
