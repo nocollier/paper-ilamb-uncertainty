@@ -7,7 +7,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import xarray as xr
 
-matplotlib.rc("font", size=18)
+# matplotlib.rc("font", size=18)
+plt.rcParams.update({"text.usetex": True, "font.family": "serif", "font.size": 18})
 
 
 def plot_bias_cartoon(

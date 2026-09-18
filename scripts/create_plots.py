@@ -1,11 +1,11 @@
 from pathlib import Path
 
-import matplotlib
+# import matplotlib
 import matplotlib.pyplot as plt
 import pandas as pd
 from matplotlib.ticker import MultipleLocator
 
-matplotlib.rc("font", size=18)
+plt.rcParams.update({"text.usetex": True, "font.family": "serif", "font.size": 24})
 
 
 def rank_changes(df: pd.DataFrame) -> float:
@@ -27,9 +27,10 @@ def by_var_dset(df: pd.DataFrame, path: Path | None = None):
     path.mkdir(exist_ok=True, parents=True)
     df = df.reset_index()
     fig, axs = plt.subplots(
-        figsize=(35, 35 * 7 / 5), nrows=7, ncols=5, tight_layout=True, dpi=200
+        figsize=(25, 25 * 6 / 4), nrows=6, ncols=4, tight_layout=True, dpi=200
     )
     count = -1
+    subfig = "abcdefghijklmnopqrstuvwxyz"
     for (var, dset), grp in df.groupby(["variable", "dataset"]):
         if "Salinity" in var:
             continue
@@ -50,10 +51,19 @@ def by_var_dset(df: pd.DataFrame, path: Path | None = None):
                 1.0,
                 ycoord[lbl],
                 f"$r_{{{lbl}}} = ${rank_changes(pl):.3f}",
-                color=colors[lbl],
+                color="k",  # colors[lbl],
                 ha="right",
                 va="bottom",
                 fontdict=dict(size=24),
+            )
+            ax.text(
+                0.025,
+                1,
+                f"$({''.join([subfig[count % 26]] * (int(count / 26) + 1))})$",
+                color="k",
+                ha="left",
+                va="top",
+                fontdict={"size": 36},
             )
         ax.set_title(f"{var}\n{dset}")
         ax.set_xlabel("Score, No Uncertainty [1]")
@@ -93,4 +103,6 @@ def by_var_dset(df: pd.DataFrame, path: Path | None = None):
 if __name__ == "__main__":
     df = pd.read_parquet("../data/uncertainty.parquet")
     df = df[~df.index.get_level_values(0).str.endswith("Surface")]
+    df = df[~df.index.get_level_values(1).str.startswith("CARDAMOM")]
+    print(df)
     by_var_dset(df)
