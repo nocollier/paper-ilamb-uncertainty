@@ -241,7 +241,6 @@ While there are relatively few reference datasets that provide some explicit mea
 		\hline
 		Section            & Dataset           & Variables                                                                            \\
 		\hline
-		\ref{s:cardamom}   & CARDAMOM          & \cardvars                                                                            \\
 		\ref{s:olc}        & CLASS-1-1         & \classvars                                                                           \\
 		\ref{s:fbnf}       & Davies-Barnard    & biological nitrogen fixation ($\mathit{fBNF}$)                                       \\
 		\ref{s:olc}        & DOLCE-1-0         & evapotranspiration ($\mathit{evspsbl}$)                                              \\
@@ -299,23 +298,6 @@ We refer to the discrete water sample dataset in WOD23 as Ocean Station Data (OS
 A rough measure of the uncertainty or precision of the climatological objectively analyzed fields can be obtained by quantifying their deviation from the statistical nutrient mean fields at all grids and depths. WOA23 includes fields of the deviation of the statistical mean from the climatological mean at each 1° square at each standard depth. The deviations also reflect the combined effects of data coverage, depth interpolation, and smoothing by the response function (Table 1.3, Figure 1.2).
 
 
-
-
-
-
-\subsection{CARDAMOM}\label{s:cardamom}
-
-{\color{blue}
-	Should we drop CARDAMOM from this paper?
-	\begin{itemize}
-		\item I included it originally to make the strongest case that our methodology behaves as we anticipate. Including CARDAMOM certainly strengthens that point. They have many variables, some of which we have no other reference data.
-		\item After looking through the results (figure 3), they do not really tell a useful story beyond what our other datasets do and they possibly raise more questions that we would need to explain. For example, the soil carbon comparisons are poor.
-		\item Removing them would leave us with 21 panels in figure 3, making it easer to parse the information without weakening our position.
-		\item Given that CARDAMOM is new to comparisons with ILAMB, perhaps it is better to leave that to a separate paper where the results can be explored more in detail.
-	\end{itemize}
-}
-
-
 \section{Numerical Experiment and Results}\label{sec:results}
 
 In order to test the impact that the proposed methodological changes have on ILAMB bias and RMSE scores, we setup a numerical experiment where we run the ILAMB code using only the datasets that have some uncertainty encoded against a selection of CMIP6 models (BCC-ESM1, CanESM5, CESM2, E3SM-1-1, EC-Earth3-Veg, GFDL-ESM4, GISS-E2-1-G, IPSL-CM6A-LR, MIROC-ES2L, MPI-ESM1-2-LR, UKESM1-0-LL). These models were selected, not as an exhaustive list, but rather as a sample of possible models to draw sufficient conclusions about the impact of our methodological changes.
@@ -341,7 +323,7 @@ This manuscript has been authored by UT-Battelle, LLC under Contract No. DE-AC05
 
 This research was supported through the Reducing Uncertainties in Biogeochemical Interactions through Synthesis and Computation Scientific Focus Area (RUBISCO SFA), which is sponsored by the Regional and Global Climate Modeling (RGCM) Program in the Climate and Environmental Sciences Division (CESD) of the Office of Biological and Environmental Research (BER) in the U.S.\ Department of Energy Office of Science.  Oak Ridge National Laboratory (ORNL) is managed by UT-Battelle, LLC for the U.S. Department of Energy under Contract No.\ DE-AC05-00OR22725. The National Center for Atmospheric Research (NCAR) is managed by the University Corporation for Atmospheric Research (UCAR) on behalf of the National Science Foundation (NSF).
 
-\bibliography{refs/abbrev,refs/Wang_ESSD_20210907,refs/Hobeichi_DOLCE_20210419,refs/Hobeichi_LORA_20191115,refs/Xu_SciAdv_20210702,refs/Hobeichi_HESS_20180218,refs/Pastorello_SciData_20200709,refs/Collier_JAMES_20181101,refs/Xu_XuSaatchi2021_20210518,refs/DaviesBarnard_GBC_20200209,refs/Hobeichi_HESS_20190219,refs/Wang_JGRB_20240201,refs/Wang_Wang2024_20230619,refs/Poggio_SOIL_20210614,refs/Hobeichi_JClim_20200301,refs/Bishop_ClimDyn_20130801,refs/Wang_WangMao-2021_20210101,refs/Hobeichi_CLASS_20191115}
+\bibliography{refs/abbrev,refs/Collier_JAMES_20181101,refs/Hobeichi_HESS_20180218,refs/Hobeichi_LORA_20191115,refs/Righi_EGU_20200316,refs/Pastorello_SciData_20200709,refs/Hobeichi_HESS_20190219,refs/Lee_EGU_20240515,refs/Dora_Zenodo_20251121,refs/Hassler_RG_20260208,refs/Merchant_ESSD_20170525,refs/Poggio_SOIL_20210614,refs/Hobeichi_CLASS_20191115,refs/DaviesBarnard_GBC_20200209,refs/Wang_Wang2024_20230619,refs/Wang_WangMao-2021_20210101,refs/Xu_XuSaatchi2021_20210518,refs/Wang_JGRB_20240201,refs/Hobeichi_DOLCE_20210419,refs/Bishop_ClimDyn_20130801,refs/Hobeichi_JClim_20200301,refs/Xu_SciAdv_20210702,refs/Wang_ESSD_20210907}
 
 {\color{blue}
 	\section*{Appendix}
