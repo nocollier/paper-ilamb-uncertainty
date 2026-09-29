@@ -1,13 +1,11 @@
 from pathlib import Path
-from typing import Literal
 
-import ilamb3.load as ill
-import matplotlib
+import cartopy.crs as ccrs
+import cartopy.feature as cfeature
 import matplotlib.pyplot as plt
-import numpy as np
 import xarray as xr
 
-matplotlib.rc("font", size=18)
+plt.rcParams.update({"text.usetex": True, "font.family": "serif", "font.size": 14})
 
 
 def get_sister_files(nc_file: Path) -> tuple[Path, Path]:
@@ -50,28 +48,93 @@ def combine_sister_files(un_file: Path, no_file: Path) -> xr.Dataset:
     return ds
 
 
-def plot_panel(ds: xr.Dataset, plot: Literal["biasscore", "rmsescore"]):
-    if plot not in ds:
-        raise ValueError(f"Dataset does not contain {plot=}")
-    fig, axs = plt.subplots(figsize=(8, 12), nrows=3, tight_layout=True)
-    ds[plot].plot(ax=axs[0], vmin=0, vmax=1)
-    ds[f"un{plot}"].plot(ax=axs[1], vmin=0, vmax=1)
-    da = ds[f"diff{plot}"].values.flatten()
-    da = da[~np.isnan(da)]
-    ds[f"diff{plot}"].plot(ax=axs[2], vmin=0, vmax=np.quantile(da, 0.95))
+def plot_panel(
+    ref: xr.Dataset,
+    com: xr.Dataset,
+    ref_name: str,
+    model_name: str,
+    var_name: str,
+    cmap: str = "viridis",
+):
+    cmap = plt.get_cmap(cmap, 9)
+    score = {
+        "cmap": plt.get_cmap("plasma", 9),
+        "vmin": 0,
+        "vmax": 1,
+        "cbar_kwargs": {"label": "[1]"},
+    }
+    nrow = 3 if "rmsescore" in com else 2
+    fig, axs = plt.subplots(
+        figsize=(12, 3.0 * nrow),
+        nrows=nrow,
+        ncols=2,
+        tight_layout=True,
+        subplot_kw={"projection": ccrs.Robinson()},
+    )
+    xf = ccrs.PlateCarree()
+    ref["mean"].plot(
+        ax=axs[0, 0],
+        cmap=cmap,
+        transform=xf,
+        cbar_kwargs={"label": f"[{ref['mean'].attrs.get('units', '')}]"},
+    )
+    ref["uncert"].plot(
+        ax=axs[0, 1],
+        cmap=plt.get_cmap("Reds", 9),
+        vmin=0,
+        transform=xf,
+        cbar_kwargs={"label": f"[{ref['mean'].attrs.get('units', '')}]"},
+    )
+    com["biasscore"].plot(ax=axs[1, 0], transform=xf, **score)
+    com["unbiasscore"].plot(ax=axs[1, 1], transform=xf, **score)
+    if "rmsescore" in com:
+        com["rmsescore"].plot(ax=axs[2, 0], transform=xf, **score)
+        com["unrmsescore"].plot(ax=axs[2, 1], transform=xf, **score)
+    # Subfigure titles
+    axs[0, 0].set_title(f"{ref_name} (Reference) {var_name} Mean")
+    axs[0, 1].set_title(f"{ref_name} (Reference) {var_name} Uncertainty")
+    axs[1, 0].set_title(f"{model_name} (Model) Bias Score")
+    axs[1, 1].set_title(f"{model_name} (Model) Uncertainty Bias Score")
+    if "rmsescore" in com:
+        axs[2, 0].set_title(f"{model_name} (Model) RMSE Score")
+        axs[2, 1].set_title(f"{model_name} (Model) Uncertainty RMSE Score")
+    # Subfigure labels
+    lbls = "abcdef"
+    for i in range(axs.shape[0]):
+        for j in range(axs.shape[1]):
+            axs[i, j].text(
+                0,
+                0,
+                f"$({lbls[2 * i + j]})$",
+                color="k",
+                ha="left",
+                va="bottom",
+                transform=axs[i, j].transAxes,
+                fontdict={"size": 18},
+            )
+            axs[i, j].add_feature(
+                cfeature.NaturalEarthFeature(
+                    "physical", "land", "110m", edgecolor="face", facecolor="0.95"
+                ),
+                zorder=-1,
+            )
+            axs[i, j].add_feature(
+                cfeature.NaturalEarthFeature(
+                    "physical", "ocean", "110m", edgecolor="face", facecolor="0.85"
+                ),
+                zorder=-1,
+            )
     return fig
 
 
 if __name__ == "__main__":
-    ds = combine_sister_files(
+    dsr = xr.open_dataset(
+        Path("ilamb/_build/Uncertainty/LatentHeat/CLASS-1-1/Reference.nc")
+    )
+    dsc = combine_sister_files(
         *get_sister_files(
             Path("ilamb/_build/NoUncertainty/LatentHeat/CLASS-1-1/CanESM5.nc")
         )
     )
-    fig = plot_panel(ds, "biasscore")
-    fig.savefig("bias.png")
-    plt.close()
-    fig = plot_panel(ds, "rmsescore")
-    fig.savefig("rmse.png")
-    plt.close()
-    ds.load()
+    fig = plot_panel(dsr, dsc, "CLASS-1-1", "CanESM5", "hfls", cmap="viridis")
+    fig.savefig("hfls.png", dpi=200)
