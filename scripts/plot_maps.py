@@ -2,6 +2,7 @@ from pathlib import Path
 
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
+import ilamb3.dataset as ild
 import matplotlib.pyplot as plt
 import xarray as xr
 
@@ -34,17 +35,24 @@ def get_sister_files(nc_file: Path) -> tuple[Path, Path]:
 
 
 def combine_sister_files(un_file: Path, no_file: Path) -> xr.Dataset:
-    dsa = xr.open_dataset(un_file)
+    dsa = xr.open_dataset(un_file).drop_vars("mean")
     dsa = dsa.drop_vars([v for v in dsa if v not in ["biasscore", "rmsescore"]]).rename(
-        {"biasscore": "unbiasscore", "rmsescore": "unrmsescore"}
+        {
+            key: val
+            for key, val in {
+                "biasscore": "unbiasscore",
+                "rmsescore": "unrmsescore",
+            }.items()
+            if key in dsa
+        },
     )
-    dsb = xr.open_dataset(no_file)
+    dsb = (
+        xr.open_dataset(no_file)
+        .drop_vars("mean")
+        .rename({"lat_nested": "lat1", "lon_nested": "lon1"})
+    )
     dsb = dsb.drop_vars([v for v in dsb if v not in ["biasscore", "rmsescore"]])
     ds = xr.merge([dsa, dsb])
-    for plot in ["biasscore", "rmsescore"]:
-        if plot not in ds:
-            continue
-        ds[f"diff{plot}"] = ds[f"un{plot}"] - ds[plot]
     return ds
 
 
@@ -57,11 +65,13 @@ def plot_panel(
     cmap: str = "viridis",
 ):
     cmap = plt.get_cmap(cmap, 9)
+    xf = ccrs.PlateCarree()
     score = {
         "cmap": plt.get_cmap("plasma", 9),
         "vmin": 0,
         "vmax": 1,
         "cbar_kwargs": {"label": "[1]"},
+        "transform": xf,
     }
     nrow = 3 if "rmsescore" in com else 2
     fig, axs = plt.subplots(
@@ -71,25 +81,27 @@ def plot_panel(
         tight_layout=True,
         subplot_kw={"projection": ccrs.Robinson()},
     )
-    xf = ccrs.PlateCarree()
     ref["mean"].plot(
         ax=axs[0, 0],
         cmap=cmap,
         transform=xf,
+        vmin=float(ref["mean"].quantile(0.02)),
+        vmax=float(ref["mean"].quantile(0.98)),
         cbar_kwargs={"label": f"[{ref['mean'].attrs.get('units', '')}]"},
     )
     ref["uncert"].plot(
         ax=axs[0, 1],
         cmap=plt.get_cmap("Reds", 9),
         vmin=0,
+        vmax=float(ref["uncert"].quantile(0.98)),
         transform=xf,
         cbar_kwargs={"label": f"[{ref['mean'].attrs.get('units', '')}]"},
     )
-    com["biasscore"].plot(ax=axs[1, 0], transform=xf, **score)
-    com["unbiasscore"].plot(ax=axs[1, 1], transform=xf, **score)
+    com["biasscore"].plot(ax=axs[1, 0], **score)
+    com["unbiasscore"].plot(ax=axs[1, 1], **score)
     if "rmsescore" in com:
-        com["rmsescore"].plot(ax=axs[2, 0], transform=xf, **score)
-        com["unrmsescore"].plot(ax=axs[2, 1], transform=xf, **score)
+        com["rmsescore"].plot(ax=axs[2, 0], **score)
+        com["unrmsescore"].plot(ax=axs[2, 1], **score)
     # Subfigure titles
     axs[0, 0].set_title(f"{ref_name} (Reference) {var_name} Mean")
     axs[0, 1].set_title(f"{ref_name} (Reference) {var_name} Uncertainty")
@@ -128,13 +140,44 @@ def plot_panel(
 
 
 if __name__ == "__main__":
-    dsr = xr.open_dataset(
-        Path("ilamb/_build/Uncertainty/LatentHeat/CLASS-1-1/Reference.nc")
-    )
-    dsc = combine_sister_files(
-        *get_sister_files(
-            Path("ilamb/_build/NoUncertainty/LatentHeat/CLASS-1-1/CanESM5.nc")
+    if True:
+        dsr = xr.open_dataset(
+            Path("ilamb/_build/Uncertainty/Precipitation/CLASS-1-1/Reference.nc")
         )
-    )
-    fig = plot_panel(dsr, dsc, "CLASS-1-1", "CanESM5", "hfls", cmap="viridis")
-    fig.savefig("hfls.png", dpi=200)
+        dsc = combine_sister_files(
+            *get_sister_files(
+                Path(
+                    "ilamb/_build/NoUncertainty/Precipitation/CLASS-1-1/UKESM1-0-LL.nc"
+                )
+            )
+        )
+        dsr = ild.convert(dsr, "mm d-1", "mean")
+        dsr = ild.convert(dsr, "mm d-1", "uncert")
+        fig = plot_panel(dsr, dsc, "CLASS-1-1", "UKESM1-0-LL", "pr", cmap="Blues")
+        fig.savefig("pr.png", dpi=200)
+
+    if True:
+        dsr = xr.open_dataset(
+            Path("ilamb/_build/Uncertainty/SoilCarbon/SoilGrids2/Reference.nc")
+        )
+        dsc = combine_sister_files(
+            *get_sister_files(
+                Path("ilamb/_build/NoUncertainty/SoilCarbon/SoilGrids2/CESM2.nc")
+            )
+        )
+        fig = plot_panel(dsr, dsc, "SoilGrids2", "CESM2", "cSoil", cmap="viridis")
+        fig.savefig("cSoil.png", dpi=200)
+
+    if True:
+        dsr = xr.open_dataset(
+            Path("ilamb/_build/Uncertainty/SurfaceNetRadiation/CLASS-1-1/Reference.nc")
+        )
+        dsc = combine_sister_files(
+            *get_sister_files(
+                Path(
+                    "ilamb/_build/NoUncertainty/SurfaceNetRadiation/CLASS-1-1/E3SM-1-1.nc"
+                )
+            )
+        )
+        fig = plot_panel(dsr, dsc, "CLASS-1-1", "E3SM-1-1", "rns", cmap="cool")
+        fig.savefig("rns.png", dpi=200)

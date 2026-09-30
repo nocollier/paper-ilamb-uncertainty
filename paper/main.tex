@@ -30,7 +30,9 @@
 \correspondingauthor{Nathan Collier}{nathaniel.collier@gmail.com}
 
 \begin{abstract}
-	Blah
+
+	We detail methodological changes to the ILAMB bias and root mean square error scoring methodology that discounts errors that fall within the reference data uncertainty.
+
 \end{abstract}
 
 \section{Introduction}\label{sec:intro}
@@ -303,17 +305,35 @@ A rough measure of the uncertainty or precision of the climatological objectivel
 In order to test the impact that the proposed methodological changes have on ILAMB bias and RMSE scores, we setup a numerical experiment where we run the ILAMB code using only the datasets that have some uncertainty encoded against a selection of CMIP6 models (BCC-ESM1, CanESM5, CESM2, E3SM-1-1, EC-Earth3-Veg, GFDL-ESM4, GISS-E2-1-G, IPSL-CM6A-LR, MIROC-ES2L, MPI-ESM1-2-LR, UKESM1-0-LL). These models were selected, not as an exhaustive list, but rather as a sample of possible models to draw sufficient conclusions about the impact of our methodological changes.
 
 We extracted score information from the ILAMB results and present it in figure~\ref{f:score} for bias and RMSE where appropriate. Each panel of the figure depicts a series of score pairs with and without considering uncertainty. While each pair represents a model, we leave them anonymous in this work as the aim is to analyze the methodological change and not draw conclusions about specific models.
-
-First, we observe that scores do not degrade. Each panel of figure~\ref{f:score} has the bottom right triangle shaded to emphasize that no score pair lies in a region which would imply a degradation in score. This feature is by design and allows us to treat datasets with and without uncertainty in one consistent framework. This also carries with it the consequence that in ILAMB, datasets without explicit uncertainty are assumed to have zero uncertainty. As scores only increase or stay the same, it may seem that we have blunted our measurement tool, leading to more models which appear to perform well. We propose an alternative interpretation that this formulation seeks to only penalize errors where we are certain about the reference data. This leads to score maps that can more skillfully point to areas where model improvements would have the most impact. From this point of view a good score rather reflects that the reference data has reached is limit of usefulness in constraining the model. This forms an important feedback loop to data providers that more accurate reference data is needed to make useful comparisons.
-
-Second, for the reference and model data selected, there is no large change in model rankings. We emphasize this by including the Pearson correlation coefficient for each series in the bottom right of the plot as an indication of linearity. Near-ubiquitous strong linearity implies that while scores are different, the inclusion of uncertainty does not dramatically change our notion of the ranking of models. This  also suggests that while considering uncertainty is important for prioritizing model developments in regions where we are certain of large errors, we have not been purporting a false picture of performance by having previously ignored it. One notable exception to this observation is the panel showing soil moisture at 0 [m] with the WangMao-2021(OLC) data product where the Pearson correlation coefficient of the bias score is 0.545. In this product the surface uncertainty is quite large leading to substantial increases in the score (0.2 to 0.8). Such widespread large uncertainty appears to impact models differently, however with a spread of scores that remains tight. It could be argued that model performance with and without uncertainty remains similar across all models.
-
-We highlight that not all dataset/variables have been equally affected by our methodological changes. In figure~\ref{f:score}, the closer the point series are to the diagonal, the less affected the scores have been by including uncertainty. Consider the difference in the soil carbon across the SoilGrids2 and Wang2024 panels. The scores of SoilGrids2 are greatly affected by the inclusion of uncertainty. The values shift from 0.3-0.6 to 0.6-1.0. This is due to the uneven sampling of soil carbon data globally, leading to large uncertainty especially in areas where few cores have been extracted. In contrast, the Wang2024 product is a reconstruction over the continental United States and Alaska, where data is comparatively densly available. The resulting uncertainties are lower, which lead to small changes in score with these methodological changes.
 %
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=\textwidth]{../figs/composite.png}
 	\caption{A comparison of ILAMB bias (orange) and RMSE (purple) scores with and without uncertainty. In each panel, the bottom right triangle is shaded to emphasize that no score degrades with the inclusion of uncertainty. A Pearson correlation coefficient is included for each score as a measure of linearity, leading to the conclusion that the inclusion of uncertainty does not dramatically reverse our notion of the ranking of model scores.}\label{f:score}
+\end{figure}
+
+First, we observe that scores do not degrade. Each panel of figure~\ref{f:score} has the bottom right triangle shaded to emphasize that no score pair lies in a region which would imply a degradation in score. This feature is by design and allows us to treat datasets with and without uncertainty in one consistent framework. This also carries with it the consequence that in ILAMB, datasets without explicit uncertainty are assumed to have zero uncertainty. As scores only increase or stay the same, it may seem that we have blunted our measurement tool, leading to more models which appear to perform well. We propose an alternative interpretation that this formulation seeks to only penalize errors where we are certain about the reference data. This leads to score maps that can more skillfully point to areas where model improvements would have the most impact. From this point of view a good score rather reflects that the reference data has reached is limit of usefulness in constraining the model. This forms an important feedback loop to data providers that more accurate reference data is needed to make useful comparisons.
+%
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=\textwidth]{../figs/cSoil.png}
+	\caption{The impact of uncertainty when comparing SoilGrids2 soil carbon to CESM2. In panel (a) we plot the mean soil carbon along with its uncertainty panel (b). Panel (c) shows the previous bias score based on a relative error given equation~\eqref{e:bias0} and panel (d) the proposed change incorporating reference uncertainty whose relative error is given in equation~\eqref{e:bias}. The new methodology helps focus attention to the high latitudes where the biases are far larger than the reference uncertainty leading to poor bias scores.}\label{f:csoil}
+\end{figure}
+%
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=\textwidth]{../figs/rns.png}
+	\caption{The impact of uncertainty when comparing CLASS-1-1 surface net radiation to E3SM-1-1. In panel (a) we plot the mean radiation along with its uncertainty in panel (b). The bias and RMSE score maps are shown in panels (c) and (e) and their counterparts which include uncertainty in panels (d) and (f). Both scores are nearly perfect globally, illustrating that in the context of E3SM-1-1, we have reached the interpretative limit of this dataset.}\label{f:rns}
+\end{figure}
+
+Second, for the reference and model data selected, there is no large change in model rankings. We emphasize this by including the Pearson correlation coefficient for each series in the bottom right of the plot as an indication of linearity. Near-ubiquitous strong linearity implies that while scores are different, the inclusion of uncertainty does not dramatically change our notion of the ranking of models. This also suggests that while considering uncertainty is important for prioritizing model developments in regions where we are certain of large errors, we have not been purporting a false picture of performance by having previously ignored it. One notable exception to this observation is the panel showing soil moisture at 0 [m] with the WangMao-2021(OLC) data product where the Pearson correlation coefficient of the bias score is 0.545. In this product the surface uncertainty is quite large leading to substantial increases in the score (0.2 to 0.8). Such widespread large uncertainty appears to impact models differently, however with a spread of scores that remains tight. It could be argued that model performance with and without uncertainty remains similar across all models.
+
+We highlight that not all dataset/variables have been equally affected by our methodological changes. In figure~\ref{f:score}, the closer the point series are to the diagonal, the less affected the scores have been by including uncertainty. Consider the difference in the soil carbon across the SoilGrids2 and Wang2024 panels. The scores of SoilGrids2 are greatly affected by the inclusion of uncertainty. The values shift from 0.3-0.6 to 0.6-1.0. This is due to the uneven sampling of soil carbon data globally, leading to large uncertainty especially in areas where few cores have been extracted. In contrast, the Wang2024 product is a reconstruction over the continental United States and Alaska, where data is comparatively densly available. The resulting uncertainties are lower, which lead to small changes in score with these methodological changes.
+%
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=\textwidth]{../figs/pr.png}
+	\caption{The impact of uncertainty when comparing CLASS-1-1 precipitation to UKESM1-0-LL. In panel (a) we plot the mean precipitation along with its uncertainty in panel (b). The bias and RMSE score maps are shown in panels (c) and (e) and their counterparts which include uncertainty in panels (d) and (f). Given the relative low uncertainty of this product, the resulting score maps exhibit smaller differences yet still help focus attention to regions where errors exceed the uncertainty.}\label{f:pr}
 \end{figure}
 
 \clearpage
