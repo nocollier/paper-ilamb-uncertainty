@@ -204,7 +204,33 @@ We use the same idea as in the bias score, where we aim to only penalize errors 
 Equation~\eqref{e:rmse} can be understood visually from figure~\ref{fig:rmse} where we repeat the comparisons at the same two sites except the traces have been centralized. When computing $\varepsilon^p_{\mathrm{rmse}}(\bx)$ from equation~\eqref{e:rmse0}, the integral in the numerator sums up the area between the red and black curves. In constrast, when computing $\varepsilon_{\mathrm{rmse}}(\bx)$ from equation~\eqref{e:rmse} only the light red shaded areas are included in the numerator's integral, leading to a discount in the total integrated RMSE.
 
 \clearpage
-\section{Datasets}\label{sec:data}
+\section{Numerical Experiment}
+
+In order to test the impact that the proposed methodological changes have on ILAMB bias and RMSE scores, we set up a numerical experiment where we run the ILAMB code using only the reference datasets that have some uncertainty encoded (i.e. those in section~\ref{sec:data}) against a selection of CMIP6 models (table~\ref{t:cmip6}). These models were selected, not as an exhaustive list, but rather as a representative sample sufficient to draw conclusions about the impact of the methodological changes. For each reference dataset, we applied both the original ILAMB methodology and the proposed additions for only bias and RMSE where applicable\footnote{Some reference datasets do not have a long enough time record to make the RMSE evaluation meaningful.} and make a side-by-side comparison.
+%
+\begin{table}[ht]
+	\caption{CMIP6 models used in this study.}\label{t:cmip6}
+	\rowcolors{1}{white}{gray!15}
+	\begin{tabular}{lll}
+		\hline
+		Model name    & Variant label & Reference \\
+		\hline
+		BCC-ESM1      & r1i1p1f1      &           \\
+		CanESM5       & r1i1p1f1      &           \\
+		CESM2         & r1i1p1f1      &           \\
+		E3SM-1-1      & r1i1p1f1      &           \\
+		EC-Earth3-Veg & r1i1p1f1      &           \\
+		GFDL-ESM4     & r1i1p1f1      &           \\
+		GISS-E2-1-G   & r1i1p1f1      &           \\
+		IPSL-CM6A-LR  & r1i1p1f1      &           \\
+		MIROC-ES2L    & r1i1p1f1      &           \\
+		MPI-ESM1-2-LR & r1i1p1f1      &           \\
+		UKESM1-0-LL   & r1i1p1f1      &           \\
+		\hline
+	\end{tabular}
+\end{table}
+
+\subsection{Reference Datasets}\label{sec:data}
 
 While there are relatively few reference datasets that provide some explicit measure of uncertainty, the number is growing. In this section we will discuss these datasets starting with those produced by the same methodology and ending with unique products, highlighting the source of uncertainty in each case. We summarize the datasets included in this paper along with the variables available in each in table~\ref{t:datasets}.
 \newcommand{\classvars}{
@@ -239,53 +265,53 @@ While there are relatively few reference datasets that provide some explicit mea
 \begin{table}[ht]
 	\caption{A selection of global or continental scale reference datasets which include some measure of uncertainty.}\label{t:datasets}
 	\rowcolors{1}{white}{gray!15}
-	\begin{tabular}{llp{7cm}}
+	\begin{tabular}{lp{7cm}l}
 		\hline
-		Section            & Dataset           & Variables                                                                            \\
+		Dataset           & Variables                                                                               & Section            \\
 		\hline
-		\ref{s:olc}        & CLASS-1-1         & \classvars                                                                           \\
-		\ref{s:fbnf}       & Davies-Barnard    & biological nitrogen fixation ($\mathit{fBNF}$)                                       \\
-		\ref{s:olc}        & DOLCE-1-0         & evapotranspiration ($\mathit{evspsbl}$)                                              \\
-		\ref{s:fluxnet}    & Fluxnet-2015      & gross primary productivity ($\mathit{gpp}$), ecosystem respiration ($\mathit{reco}$) \\
-		\ref{s:olc}        & LORA-1-0          & runoff ($\mathit{mrro}$)                                                             \\
-		\ref{s:soilgrids2} & SoilGrids2        & soil carbon ($\mathit{cSoil}$)                                                       \\
-		\ref{s:olc}        & WangMao-2021(OLC) & soil moisture ($\mathit{mrsol}$)                                                     \\
-		\ref{s:ec}         & WangMao-2021(EC)  & soil moisture ($\mathit{mrsol}$)                                                     \\
-		\ref{s:wang}       & Wang2024          & soil carbon ($\mathit{cSoil}$)                                                       \\
-		\ref{s:woa}        & WOA-23            & \woavars                                                                             \\
+		CLASS-1-1         & \classvars                                                                              & \ref{s:olc}        \\
+		Davies-Barnard    & biological nitrogen fixation ($\mathit{fBNF}$)                                          & \ref{s:fbnf}       \\
+		DOLCE-1-0         & evapotranspiration ($\mathit{evspsbl}$)                                                 & \ref{s:olc}        \\
+		Fluxnet-2015      & gross primary productivity ($\mathit{gpp}$), ecosystem respiration ($\mathit{resubco}$) & \ref{s:fluxnet}    \\
+		LORA-1-0          & runoff ($\mathit{mrro}$)                                                                & \ref{s:olc}        \\
+		SoilGrids2        & soil carbon ($\mathit{cSoil}$)                                                          & \ref{s:soilgrids2} \\
+		WangMao-2021(OLC) & soil moisture ($\mathit{mrsol}$)                                                        & \ref{s:olc}        \\
+		WangMao-2021(EC)  & soil moisture ($\mathit{mrsol}$)                                                        & \ref{s:ec}         \\
+		Wang2024          & soil carbon ($\mathit{cSoil}$)                                                          & \ref{s:wang}       \\
+		WOA-23            & \woavars                                                                                & \ref{s:woa}        \\
 		\hline
 	\end{tabular}
 \end{table}
 
-\subsection{Optimal Linear Combination}\label{s:olc}
+\subsubsection{Optimal Linear Combination}\label{s:olc}
 
-As the commmunity has produced multiple reference datasets for a given variable, they have also worked to combine them to both improve the estimate as well as produce a measure of uncertainty casted as a variance among products. However, while such datasets are produced in an independent manner, they use much of the same observational data. This leads to a question of to what extent can these collection of products represent independent estimates?
+As the commmunity has produced multiple reference datasets for a given variable, they have also worked to combine them to both improve the estimate as well as produce a measure of uncertainty casted as a variance among products. However, while input reference datasets are produced in an independent manner, they depend on many of the same sources of observational data. This leads to a question of to what extent can these composite products represent an independent estimate?
 
-The Optimal Linear Combination technique (OLC) outlined in~\cite{Bishop_ClimDyn_20130801} has emerged as a means to transform an ensemble of gridded products to produce a mean and variance that have the same statistical relationship to observations. The OLC poses a constrained optimization problem where a series of weights blends the gridded products in a way that minimizes the mean square distance between each product and {\it in situ} data where available. The uncertainty is presented as the weighted standard deviation among products where the weights have been manipulated to ensure that the variance at sites matches the observational data.
+The Optimal Linear Combination technique (OLC) outlined in~\cite{Bishop_ClimDyn_20130801} has emerged as a means to blend an ensemble of gridded products to produce a mean and an uncertainty derived from the product variance. The OLC poses a constrained optimization problem where a series of weights blends the gridded products in a way that minimizes the mean square distance between each product and {\it in situ} data where available. The uncertainty is presented as the weighted standard deviation among products where the weights have been manipulated to ensure that the variance at sites matches the observational data.
 
 The DOLCE-1-0 (\cite{Hobeichi_HESS_20180218,Hobeichi_DOLCE_20210419}), LORA-1-0 (\cite{Hobeichi_HESS_20190219,Hobeichi_LORA_20191115}), and WangMao-2021(OLC) (\cite{Wang_ESSD_20210907,Wang_WangMao-2021_20210101}) datasets employ this technique to form estimates for evapotranspiration, runoff, and soil moisture respectively. The suite of datasets known as CLASS-1-1 provide estimates formed by the same technique, but that simulaneuosly close the energy and water budget. Note that in addition to the variables list in table~\ref{t:datasets}, CLASS-1-1 (\cite{Hobeichi_JClim_20200301,Hobeichi_CLASS_20191115}) also provides and estimate of the change in water storage and ground heat flux, but as they have no analog in CMIP output, we omit them in this work.
 
-\subsection{Fluxnet-2015}\label{s:fluxnet}
+\subsubsection{Fluxnet-2015}\label{s:fluxnet}
 
 The Fluxnet-2015 dataset~\cite{Pastorello_SciData_20200709} consists of measurements taken at a collection of eddy covariance towers. In the context of carbon cycle variables on the monthly scale which we use in ILAMB, they provide a means for estimating uncertainty in gross primary productivity ($\mathit{gpp}$) and ecosystem respiration ($\mathit{reco}$). Both quantities are computed by the data providers from measurement values and depend on two independent CO$_2$ flux partitioning methods (daytime and nighttime). Guidance from the supplementary material suggests using an average among the partitioning methods as the variable and their difference as uncertainty.
 
-\subsection{Davies-Barnard}\label{s:fbnf}
+\subsubsection{Davies-Barnard}\label{s:fbnf}
 
-In \cite{DaviesBarnard_GBC_20200209} the authors create a global estimate of the biological nitrogen fixation by reviewing 300 papers and books and collecting field measurements including location and vegetation type. The authors use these data along with a land cover map to create an approximate global map of the fixation where the uncertainty is defined by the first and third quartile of measurements in a given land cover type.
+In~\cite{DaviesBarnard_GBC_20200209} the authors create a global estimate of the biological nitrogen fixation by reviewing 300 papers and books and collecting field measurements including location and vegetation type. The authors use these data along with a land cover map to create an approximate global map of the fixation where the uncertainty is defined by the first and third quartile of measurements in a given land cover type.
 
-\subsection{SoilGrids2}\label{s:soilgrids2}
+\subsubsection{SoilGrids2}\label{s:soilgrids2}
 
 The SoilGrids2 dataset~\cite{Poggio_SOIL_20210614} uses quantile regression forests to create a regressor for soil carbon ($\mathit{cSoil}$) from 400 global environmental covariates and 240,000 locations with soil carbon data. In contrast to random forests, the quantile regression forest method produces an estimate of quantiles of soil carbon, leading to a natural means of reporting uncertainty. The authors include the 90$^{\mathrm{th}}$ prediction interval as a measure of uncertainty.
 
-\subsection{Wang2024}\label{s:wang}
+\subsubsection{Wang2024}\label{s:wang}
 
 The Wang2024 dataset \cite{Wang_JGRB_20240201,Wang_Wang2024_20230619} produces maps of the soil carbon stocks ($\mathit{cSoil}$) across the continental United States and Alaska by a combination of $k$-means clustering and random forests. The authors grouped soil organic carbon measurements into 20 regions defined by similar environmental covariables. Then a random forest model is constructed for each region, trained on the observations from that region and then applied to other cells without observational coverage. The uncertainties of these estimates are formed from the coefficients of variation of the predictions from each random forest model.
 
-\subsection{WangMao-2021(EC)}\label{s:ec}
+\subsubsection{WangMao-2021(EC)}\label{s:ec}
 
 In addition to the WangMao-2021(OLC) soil moisture dataset described in section~\ref{s:olc}, the authors \cite{Wang_ESSD_20210907,Wang_WangMao-2021_20210101} also present a dataset using a technique known as emergent constraints. The authors build a multilinear model mapping the anomlies of temperature and precipitation to those of the soil carbon where measurements are present. Then a gridded map of soil mooisture was created using a mean climatology a a base, and applying the anomaly model where a statistically significant relationship exists. The uncertainty provided in this product consists of the standard deviation of the linear regression where the emergent relationships exist, and otherwise the range of the source soil moisture products. Note that while several variants are presented in \cite{Wang_ESSD_20210907}, we present results for the dataset blended using OLS datasets (offline land surface models, reanalysis, satellite).
 
-\subsection{World Ocean Atlas}\label{s:woa}
+\subsubsection{World Ocean Atlas}\label{s:woa}
 
 
 The historical oceanographic temperature profile data from bottle samples (OSD, measured by Reversing thermometers), Mechanical Bathy-thermographs (MBT), ship-deployed Conductivity-Temperature-Depth packages (CTD), Digital Bathythermograph (DBT), Expendable Bathythermographs (XBT), profiling floats (PFL), moored (MRB) and drifting (DRB) buoys, gliders (GLD), undulating oceanographic recorder (UOR), pinniped mounted CTD sensors (APB), and surface only data (SUR) used in this project were obtained from the NCEI archives and include all data gathered as a result of the GODAR and WOD projects.
@@ -300,9 +326,8 @@ We refer to the discrete water sample dataset in WOD23 as Ocean Station Data (OS
 A rough measure of the uncertainty or precision of the climatological objectively analyzed fields can be obtained by quantifying their deviation from the statistical nutrient mean fields at all grids and depths. WOA23 includes fields of the deviation of the statistical mean from the climatological mean at each 1° square at each standard depth. The deviations also reflect the combined effects of data coverage, depth interpolation, and smoothing by the response function (Table 1.3, Figure 1.2).
 
 
-\section{Numerical Experiment and Results}\label{sec:results}
+\section{Results}\label{sec:results}
 
-In order to test the impact that the proposed methodological changes have on ILAMB bias and RMSE scores, we setup a numerical experiment where we run the ILAMB code using only the datasets that have some uncertainty encoded (i.e. those in section~\ref{sec:data}) against a selection of CMIP6 models (BCC-ESM1, CanESM5, CESM2, E3SM-1-1, EC-Earth3-Veg, GFDL-ESM4, GISS-E2-1-G, IPSL-CM6A-LR, MIROC-ES2L, MPI-ESM1-2-LR, UKESM1-0-LL). These models were selected, not as an exhaustive list, but rather as a representative sample sufficient to draw conclusions about the impact the methodological changes. For each reference dataset, we applied both the original ILAMB methodology and the proposed additions for only bias and RMSE if applicable\footnote{Some reference datasets do not have a long enough time record to make the RMSE evaluation meaningful.}.
 
 We extracted score information from the ILAMB results and present it in figure~\ref{f:score}. The title of each subfigure represents the variable and reference dataset that was used and the points are individual model score pairs with and without considering uncertainty. While each pair represents a model, we leave them anonymous in this work as the aim is to analyze the methodological change and not draw conclusions about specific models.
 %
@@ -348,13 +373,5 @@ This manuscript has been authored by UT-Battelle, LLC under Contract No. DE-AC05
 This research was supported through the Reducing Uncertainties in Biogeochemical Interactions through Synthesis and Computation Scientific Focus Area (RUBISCO SFA), which is sponsored by the Regional and Global Climate Modeling (RGCM) Program in the Climate and Environmental Sciences Division (CESD) of the Office of Biological and Environmental Research (BER) in the U.S.\ Department of Energy Office of Science.  Oak Ridge National Laboratory (ORNL) is managed by UT-Battelle, LLC for the U.S. Department of Energy under Contract No.\ DE-AC05-00OR22725. The National Center for Atmospheric Research (NCAR) is managed by the University Corporation for Atmospheric Research (UCAR) on behalf of the National Science Foundation (NSF).
 
 \bibliography{refs/abbrev,refs/Collier_JAMES_20181101,refs/Hobeichi_HESS_20180218,refs/Hobeichi_LORA_20191115,refs/Righi_EGU_20200316,refs/Pastorello_SciData_20200709,refs/Hobeichi_HESS_20190219,refs/Lee_EGU_20240515,refs/Dora_Zenodo_20251121,refs/Hassler_RG_20260208,refs/Merchant_ESSD_20170525,refs/Poggio_SOIL_20210614,refs/Hobeichi_CLASS_20191115,refs/DaviesBarnard_GBC_20200209,refs/Wang_Wang2024_20230619,refs/Wang_WangMao-2021_20210101,refs/Xu_XuSaatchi2021_20210518,refs/Wang_JGRB_20240201,refs/Hobeichi_DOLCE_20210419,refs/Bishop_ClimDyn_20130801,refs/Hobeichi_JClim_20200301,refs/Xu_SciAdv_20210702,refs/Wang_ESSD_20210907}
-
-{\color{blue}
-	\section*{Appendix}
-
-	We would like to encourage data providers to include notions of uncertainty explicityly with the datasets they produce. For example, in the biomass dataset described in~\cite{Xu_SciAdv_20210702}, figure~S7(A) depicts a pixel uncertainty yet no data is present in the accompanying dataset~\cite{Xu_XuSaatchi2021_20210518}. Such data is useful to the community and so we will describe the CF conventions.
-	...
-
-}
 
 \end{document}
