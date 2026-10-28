@@ -37,7 +37,7 @@
 
 \section{Introduction}\label{sec:intro}
 
-Since 2009, the International Land Model Benchmarking (ILAMB) community has conducted four workshops bringing together modeling, measurements, and remote sensing communities to identify observational datasets and design  evaluation metrics for Earth system models. The methodological consensus is detailed in~\cite{Collier_JAMES_20181101} and implemented as a Python package (cite{ilamb3}) which is open source and free to the community.
+Since 2009, the International Land Model Benchmarking (ILAMB) community has conducted four workshops bringing together modeling, measurements, and remote sensing communities to identify observational datasets and design  evaluation metrics for Earth system models. The methodological consensus is detailed in~\cite{Collier_JAMES_20181101} and implemented as a Python package ({ilamb3}) which is open source and free to the community.
 
 Modelers and analysts use benchmarking tools and software to evaluate model (comparison) predictions with respect to observation (reference) data (\cite{Lee_EGU_20240515,Righi_EGU_20200316,Collier_JAMES_20181101}.) To evaluate performance, these packages calculate metrics such as bias and RMSE to represent differences (errors) between comparison and reference data. While we frequently attribute the cause of high bias or RMSE to a departure of the model data from the reference, it can also be because of reference data uncertainty. Uncertainty can be introduced at each stage of data production, from measurement, to processing, formulation, harmonization, and aggregation over space-time \cite{Merchant_ESSD_20170525}. Uncertainty can be estimated at various levels of the process and represented or calculated in myriad ways. Some reference data are accompanied with uncertainty data, but existing benchmarking tools do not attempt to incorporate provided reference data uncertainty in their evaluation metrics. For example, ESMValTool and PMP diagnostic tools produce plots that visualize uncertainty over space-time, but they do not directly incorporate uncertainty into their metrics (\cite{Lee_EGU_20240515,Righi_EGU_20200316}). Some tools do attempt to characterize uncertainty by generating a multi-reference mean of particular variables, but this does not take into account the uncertainty that might be provided alongside reference data~\cite{Hassler_RG_20260208}. If reference data are highly uncertain, large benchmarking errors reported as bias and RMSE can wrongly suggest that a model's parameterizations need improvement.
 
@@ -213,22 +213,34 @@ In order to test the impact that the proposed methodological changes have on ILA
 	\rowcolors{1}{white}{gray!15}
 	\begin{tabular}{lll}
 		\hline
-		Model name    & Variant label & Reference \\
+		Model name    & Variant label & Reference                                                      \\
 		\hline
-		BCC-ESM1      & r1i1p1f1      &           \\
-		CanESM5       & r1i1p1f1      &           \\
-		CESM2         & r1i1p1f1      &           \\
-		E3SM-1-1      & r1i1p1f1      &           \\
-		EC-Earth3-Veg & r1i1p1f1      &           \\
-		GFDL-ESM4     & r1i1p1f1      &           \\
-		GISS-E2-1-G   & r1i1p1f1      &           \\
-		IPSL-CM6A-LR  & r1i1p1f1      &           \\
-		MIROC-ES2L    & r1i1p1f1      &           \\
-		MPI-ESM1-2-LR & r1i1p1f1      &           \\
-		UKESM1-0-LL   & r1i1p1f1      &           \\
+		BCC-ESM1      & r1i1p1f1      & \cite{CMIP6.CMIP.BCC.BCC-ESM1.historical}                      \\
+		CanESM5       & r1i1p1f1      & \cite{CMIP6.CMIP.CCCma.CanESM5.historical}                     \\
+		CESM2         & r1i1p1f1      & \cite{CMIP6.CMIP.NCAR.CESM2.historical}                        \\
+		E3SM-1-1      & r1i1p1f1      & \cite{CMIP6.CMIP.E3SM-Project.E3SM-1-1.historical}             \\
+		EC-Earth3-Veg & r1i1p1f1      & \cite{CMIP6.CMIP.EC-Earth-Consortium.EC-Earth3-Veg.historical} \\
+		GFDL-ESM4     & r1i1p1f1      & \cite{CMIP6.CMIP.NOAA-GFDL.GFDL-ESM4.historical}               \\
+		GISS-E2-1-G   & r1i1p1f1      & \cite{CMIP6.CMIP.NASA-GISS.GISS-E2-1-G.historical}             \\
+		IPSL-CM6A-LR  & r1i1p1f1      & \cite{CMIP6.CMIP.IPSL.IPSL-CM6A-LR.historical}                 \\
+		MIROC-ES2L    & r1i1p1f1      & \cite{CMIP6.CMIP.MIROC.MIROC-ES2L.historical}                  \\
+		MPI-ESM1-2-LR & r1i1p1f1      & \cite{CMIP6.CMIP.MPI-M.MPI-ESM1-2-LR.historical}               \\
+		UKESM1-0-LL   & r1i1p1f1      & \cite{CMIP6.CMIP.MOHC.UKESM1-0-LL.historical}                  \\
 		\hline
 	\end{tabular}
 \end{table}
+
+
+
+
+
+
+
+
+
+
+
+
 
 \subsection{Reference Datasets}\label{sec:data}
 
@@ -269,19 +281,24 @@ While there are relatively few reference datasets that provide some explicit mea
 		\hline
 		Dataset           & Variables                                                                               & Section            \\
 		\hline
+		CARDAMOM          & \cardvars                                                                               & \ref{s:cardamom}   \\
 		CLASS-1-1         & \classvars                                                                              & \ref{s:olc}        \\
 		Davies-Barnard    & biological nitrogen fixation ($\mathit{fBNF}$)                                          & \ref{s:fbnf}       \\
 		DOLCE-1-0         & evapotranspiration ($\mathit{evspsbl}$)                                                 & \ref{s:olc}        \\
 		Fluxnet-2015      & gross primary productivity ($\mathit{gpp}$), ecosystem respiration ($\mathit{resubco}$) & \ref{s:fluxnet}    \\
 		LORA-1-0          & runoff ($\mathit{mrro}$)                                                                & \ref{s:olc}        \\
 		SoilGrids2        & soil carbon ($\mathit{cSoil}$)                                                          & \ref{s:soilgrids2} \\
-		WangMao-2021(OLC) & soil moisture ($\mathit{mrsol}$)                                                        & \ref{s:olc}        \\
-		WangMao-2021(EC)  & soil moisture ($\mathit{mrsol}$)                                                        & \ref{s:ec}         \\
 		Wang2024          & soil carbon ($\mathit{cSoil}$)                                                          & \ref{s:wang}       \\
+		WangMao-2021(EC)  & soil moisture ($\mathit{mrsol}$)                                                        & \ref{s:ec}         \\
+		WangMao-2021(OLC) & soil moisture ($\mathit{mrsol}$)                                                        & \ref{s:olc}        \\
 		WOA-23            & \woavars                                                                                & \ref{s:woa}        \\
 		\hline
 	\end{tabular}
 \end{table}
+
+\subsection{CARDAMOM}\label{s:cardamom}
+
+Blah
 
 \subsubsection{Optimal Linear Combination}\label{s:olc}
 
@@ -313,7 +330,6 @@ In addition to the WangMao-2021(OLC) soil moisture dataset described in section~
 
 \subsubsection{World Ocean Atlas}\label{s:woa}
 
-
 The historical oceanographic temperature profile data from bottle samples (OSD, measured by Reversing thermometers), Mechanical Bathy-thermographs (MBT), ship-deployed Conductivity-Temperature-Depth packages (CTD), Digital Bathythermograph (DBT), Expendable Bathythermographs (XBT), profiling floats (PFL), moored (MRB) and drifting (DRB) buoys, gliders (GLD), undulating oceanographic recorder (UOR), pinniped mounted CTD sensors (APB), and surface only data (SUR) used in this project were obtained from the NCEI archives and include all data gathered as a result of the GODAR and WOD projects.
 
 All of the in situ oceanographic O2 data collected in the 1965 and 2022 time period used in this atlas were obtained from the NCEI/WDS-Oceanography long-term data archives and include all data gathered as a result of the IODE Global Oceanographic Data Archeology and Rescue (GODAR) and WOD activities.
@@ -325,9 +341,7 @@ We refer to the discrete water sample dataset in WOD23 as Ocean Station Data (OS
 
 A rough measure of the uncertainty or precision of the climatological objectively analyzed fields can be obtained by quantifying their deviation from the statistical nutrient mean fields at all grids and depths. WOA23 includes fields of the deviation of the statistical mean from the climatological mean at each 1° square at each standard depth. The deviations also reflect the combined effects of data coverage, depth interpolation, and smoothing by the response function (Table 1.3, Figure 1.2).
 
-
 \section{Results}\label{sec:results}
-
 
 We extracted score information from the ILAMB results and present it in figure~\ref{f:score}. The title of each subfigure represents the variable and reference dataset that was used and the points are individual model score pairs with and without considering uncertainty. While each pair represents a model, we leave them anonymous in this work as the aim is to analyze the methodological change and not draw conclusions about specific models.
 %
@@ -339,7 +353,9 @@ We extracted score information from the ILAMB results and present it in figure~\
 
 First, we observe that scores do not degrade. Each panel of figure~\ref{f:score} has the bottom right triangle shaded to emphasize that no score pair lies in a region which would imply a degradation in score. This feature is by design and allows us to treat datasets with and without uncertainty in one consistent framework. However, this also carries with it the consequence that in ILAMB, datasets without explicit uncertainty are assumed to have zero uncertainty. As scores only increase or stay the same, it may seem that we have blunted our measurement tool, leading to more models which appear to perform well. We propose an alternative interpretation that this formulation seeks rather to only penalize errors where we are certain about the reference data. This leads to score maps that can more skillfully point to areas where model improvements would have the most impact.
 
-\ref{f:csoil}
+figure~\ref{f:csoil}
+figure~\ref{f:rns}
+figure~\ref{f:pr}
 
 From this point of view a good score rather reflects that the reference data has reached its limit of usefulness in constraining the model. This forms an important feedback loop to data providers that more accurate reference data is needed to make useful comparisons.
 %
@@ -372,6 +388,6 @@ This manuscript has been authored by UT-Battelle, LLC under Contract No. DE-AC05
 
 This research was supported through the Reducing Uncertainties in Biogeochemical Interactions through Synthesis and Computation Scientific Focus Area (RUBISCO SFA), which is sponsored by the Regional and Global Climate Modeling (RGCM) Program in the Climate and Environmental Sciences Division (CESD) of the Office of Biological and Environmental Research (BER) in the U.S.\ Department of Energy Office of Science.  Oak Ridge National Laboratory (ORNL) is managed by UT-Battelle, LLC for the U.S. Department of Energy under Contract No.\ DE-AC05-00OR22725. The National Center for Atmospheric Research (NCAR) is managed by the University Corporation for Atmospheric Research (UCAR) on behalf of the National Science Foundation (NSF).
 
-\bibliography{refs/abbrev,refs/Collier_JAMES_20181101,refs/Hobeichi_HESS_20180218,refs/Hobeichi_LORA_20191115,refs/Righi_EGU_20200316,refs/Pastorello_SciData_20200709,refs/Hobeichi_HESS_20190219,refs/Lee_EGU_20240515,refs/Dora_Zenodo_20251121,refs/Hassler_RG_20260208,refs/Merchant_ESSD_20170525,refs/Poggio_SOIL_20210614,refs/Hobeichi_CLASS_20191115,refs/DaviesBarnard_GBC_20200209,refs/Wang_Wang2024_20230619,refs/Wang_WangMao-2021_20210101,refs/Xu_XuSaatchi2021_20210518,refs/Wang_JGRB_20240201,refs/Hobeichi_DOLCE_20210419,refs/Bishop_ClimDyn_20130801,refs/Hobeichi_JClim_20200301,refs/Xu_SciAdv_20210702,refs/Wang_ESSD_20210907}
+\bibliography{refs/abbrev,refs/Hobeichi_HESS_20190219,refs/CMIP6.CMIP.NASA-GISS.GISS-E2-1-G.historical,refs/Lee_EGU_20240515,refs/CMIP6.CMIP.IPSL.IPSL-CM6A-LR.historical,refs/Poggio_SOIL_20210614,refs/CMIP6.CMIP.BCC.BCC-ESM1.historical,refs/Wang_Wang2024_20230619,refs/Wang_ESSD_20210907,refs/Hobeichi_CLASS_20191115,refs/Wang_WangMao-2021_20210101,refs/CMIP6.CMIP.E3SM-Project.E3SM-1-1.historical,refs/CMIP6.CMIP.MOHC.UKESM1-0-LL.historical,refs/Merchant_ESSD_20170525,refs/CMIP6.CMIP.NCAR.CESM2.historical,refs/Pastorello_SciData_20200709,refs/DaviesBarnard_GBC_20200209,refs/Hobeichi_HESS_20180218,refs/Hobeichi_LORA_20191115,refs/CMIP6.CMIP.MPI-M.MPI-ESM1-2-LR.historical,refs/Hobeichi_JClim_20200301,refs/CMIP6.CMIP.EC-Earth-Consortium.EC-Earth3-Veg.historical,refs/Hobeichi_DOLCE_20210419,refs/Wang_JGRB_20240201,refs/Righi_EGU_20200316,refs/Bishop_ClimDyn_20130801,refs/Hassler_RG_20260208,refs/CMIP6.CMIP.MIROC.MIROC-ES2L.historical,refs/Collier_JAMES_20181101,refs/CMIP6.CMIP.NOAA-GFDL.GFDL-ESM4.historical,refs/Dora_Zenodo_20251121,refs/CMIP6.CMIP.CCCma.CanESM5.historical}
 
 \end{document}
