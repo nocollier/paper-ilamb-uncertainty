@@ -16,21 +16,19 @@ def rank_changes(df: pd.DataFrame) -> float:
     return float(df.corr(numeric_only=True).iloc[0, 1])
 
 
-def by_var_dset(df: pd.DataFrame, path: Path | None = None):
+def by_var_dset(df: pd.DataFrame, nrow: int = 6, filename: str = "composite.png"):
     colors = {
         key: plt.rcParams["axes.prop_cycle"].by_key()["color"][c]
         for c, key in zip([1, 4], ["Bias", "RMSE"])
     }
     ycoord = {"Bias": 0.02, "RMSE": 0.1}
-    if path is None:
-        path = Path("_figs")
-    path.mkdir(exist_ok=True, parents=True)
     df = df.reset_index()
     fig, axs = plt.subplots(
-        figsize=(25, 25 * 6 / 4), nrows=6, ncols=4, tight_layout=True, dpi=200
+        figsize=(25, 25 * nrow / 4), nrows=nrow, ncols=4, tight_layout=True, dpi=200
     )
     count = -1
     subfig = "abcdefghijklmnopqrstuvwxyz"
+    rem_ax = None
     for (var, dset), grp in df.groupby(["variable", "dataset"]):
         if "Salinity" in var:
             continue
@@ -39,6 +37,8 @@ def by_var_dset(df: pd.DataFrame, path: Path | None = None):
         print(count + 2, var, dset)
         count += 1
         ax = axs[count // axs.shape[1], count % axs.shape[1]]
+        if "RMSE" in grp["analysis"].unique():
+            rem_ax = ax
         for lbl, pl in grp.groupby("analysis"):
             ax.scatter(
                 pl["NoUncertainty"],
@@ -85,18 +85,10 @@ def by_var_dset(df: pd.DataFrame, path: Path | None = None):
         ax.yaxis.set_major_locator(MultipleLocator(0.2))
     for blank in range(count + 1, axs.size):
         axs[blank // axs.shape[1], blank % axs.shape[1]].axis("off")
-    handles, labels = ax.get_legend_handles_labels()
+    handles, labels = rem_ax.get_legend_handles_labels()
     ax = axs[-1, -1]
-    ax.text(
-        0.5,
-        1.0,
-        "A Comparison of ILAMB Bias\nand RMSE Scores With\nand Without Uncertainty",
-        va="top",
-        ha="center",
-        fontdict=dict(size=30),
-    )
-    ax.legend(handles=handles, labels=labels, loc="lower center")
-    fig.savefig("composite.png")
+    ax.legend(handles=handles, labels=labels, loc="center")
+    fig.savefig(filename)
     plt.close()
 
 
@@ -122,5 +114,9 @@ def interactive_plot(df):
 if __name__ == "__main__":
     df = pd.read_parquet("../data/uncertainty.parquet")
     df = df[~df.index.get_level_values(0).str.endswith("Surface")]
-    # df = df[~df.index.get_level_values(1).str.startswith("CARDAMOM")]
-    # by_var_dset(df)
+    df = df[~df.index.get_level_values(1).str.startswith("CARDAMOM")]
+    by_var_dset(df)
+
+    df = pd.read_parquet("../data/uncertainty.parquet")
+    df = df[df.index.get_level_values(1).str.startswith("CARDAMOM")]
+    by_var_dset(df, 4, "cardamom.png")

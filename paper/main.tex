@@ -296,7 +296,7 @@ While there are relatively few reference datasets that provide some explicit mea
 	\end{tabular}
 \end{table}
 
-\subsection{CARDAMOM}\label{s:cardamom}
+\subsubsection{CARDAMOM}\label{s:cardamom}
 
 Blah
 
@@ -350,6 +350,13 @@ We extracted score information from the ILAMB results and present it in figure~\
 	\includegraphics[width=\textwidth]{../figs/composite.png}
 	\caption{A comparison of ILAMB bias (orange) and RMSE (purple) scores with and without uncertainty. The title of each subfigure represents the variable and reference dataset that was used and the points are individual models' scores. The bottom right triangle is shaded to emphasize that no score degrades with the inclusion of uncertainty. A Pearson correlation coefficient is included for each aspect, leading to the conclusion that the inclusion of uncertainty does not dramatically reverse our notion of model ranking.}\label{f:score}
 \end{figure}
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=\textwidth]{../figs/cardamom.png}
+	\caption{A comparison of ILAMB bias (orange) and RMSE (purple) scores with and without uncertainty for CARDAMOM variables. The title of each subfigure represents the variable and reference dataset that was used and the points are individual models' scores. The bottom right triangle is shaded to emphasize that no score degrades with the inclusion of uncertainty. A Pearson correlation coefficient is included for each aspect, leading to the conclusion that the inclusion of uncertainty does not dramatically reverse our notion of model ranking.}\label{f:scorecardamom}
+\end{figure}
+
 
 First, we observe that scores do not degrade. Each panel of figure~\ref{f:score} has the bottom right triangle shaded to emphasize that no score pair lies in a region which would imply a degradation in score. This feature is by design and allows us to treat datasets with and without uncertainty in one consistent framework. However, this also carries with it the consequence that in ILAMB, datasets without explicit uncertainty are assumed to have zero uncertainty. As scores only increase or stay the same, it may seem that we have blunted our measurement tool, leading to more models which appear to perform well. We propose an alternative interpretation that this formulation seeks rather to only penalize errors where we are certain about the reference data. This leads to score maps that can more skillfully point to areas where model improvements would have the most impact.
 
