@@ -100,9 +100,27 @@ def by_var_dset(df: pd.DataFrame, path: Path | None = None):
     plt.close()
 
 
+def interactive_plot(df):
+    import plotly
+    import plotly.express as px
+
+    df = df.reset_index()
+    df["panel"] = df["variable"] + "/" + df["dataset"]
+    fig = px.scatter(
+        df,
+        x="NoUncertainty",
+        y="Uncertainty",
+        color="analysis",
+        facet_col="panel",
+        facet_col_wrap=8,
+        hover_data=df.columns,
+    )
+    fig.for_each_annotation(lambda a: a.update(text=a.text.split("=")[-1]))
+    plotly.offline.plot(fig, filename="uncertainty.html")
+
+
 if __name__ == "__main__":
     df = pd.read_parquet("../data/uncertainty.parquet")
     df = df[~df.index.get_level_values(0).str.endswith("Surface")]
-    df = df[~df.index.get_level_values(1).str.startswith("CARDAMOM")]
-    print(df)
-    by_var_dset(df)
+    # df = df[~df.index.get_level_values(1).str.startswith("CARDAMOM")]
+    # by_var_dset(df)
