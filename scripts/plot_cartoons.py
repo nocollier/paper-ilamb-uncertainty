@@ -70,8 +70,6 @@ def plot_bias_cartoon(
 
     # plot reference mean and label
     ref_mean = ref.mean(dim="time")
-    print(f"{ref_mean=}")
-    print(f"{ref[var].std(dim='time')}")
     ax.fill_between(
         [np.datetime64("2010-02-01"), np.datetime64("2010-04-01")],
         [float(ref_mean[var] - ref_mean[f"{var}_sd"])] * 2,
@@ -104,7 +102,6 @@ def plot_bias_cartoon(
 
     # plot comparison mean and label
     com_mean = com.mean(dim="time")
-    print(f"{com_mean=}")
     ax.plot(
         [np.datetime64("2010-02-01"), np.datetime64("2010-04-01")],
         [com_mean[var]] * 2,
@@ -127,7 +124,7 @@ def plot_bias_cartoon(
     ax.set_ylim(lo - 0.08 * rng, hi + 0.05 * rng)
     ax.set_xticks([np.datetime64(f"{y}-01-01") for y in range(2008, 2011)])
     ax.set_xlabel("")
-    ax.set_ylabel(f"Latent Heat Flux [W m$^{{-2}}$]")
+    ax.set_ylabel("Latent Heat Flux [W m$^{{-2}}$]")
     fig.savefig(filename, dpi=200)
     plt.close()
 
@@ -221,7 +218,7 @@ def plot_rmse_cartoon(
     ax.set_ylim(lo - 0.08 * rng, hi + 0.05 * rng)
     ax.set_xticks([np.datetime64(f"{y}-01-01") for y in range(2008, 2011)])
     ax.set_xlabel("")
-    ax.set_ylabel(f"Latent Heat Flux [W m$^{{-2}}$]")
+    ax.set_ylabel("Centralized Latent Heat Flux [W m$^{{-2}}$]")
     fig.legend(loc="outside lower right")
     fig.savefig(filename, dpi=200)
     plt.close()
