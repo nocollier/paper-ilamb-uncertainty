@@ -111,8 +111,16 @@ def interactive_plot(df):
     plotly.offline.plot(fig, filename="uncertainty.html")
 
 
+def fix_soilgrids(df: pd.DataFrame) -> pd.DataFrame:
+    df = df.reset_index()
+    df["dataset"] = df["dataset"].str.replace("SoilGrids2", "SoilGrids-2-0")
+    df = df.set_index(["variable", "dataset", "source", "analysis"])
+    return df
+
+
 if __name__ == "__main__":
     df = pd.read_parquet("../data/uncertainty.parquet")
+    df = fix_soilgrids(df)
     df = df[~df.index.get_level_values(0).str.endswith("Surface")]
     df = df[~df.index.get_level_values(1).str.startswith("CARDAMOM")]
     by_var_dset(df)

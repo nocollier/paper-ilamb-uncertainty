@@ -275,7 +275,7 @@ While there are relatively few reference datasets that provide some explicit mea
 		DOLCE-1-0         & evapotranspiration ($\mathit{evspsbl}$)                                                 & \ref{s:olc}        \\
 		Fluxnet-2015      & gross primary productivity ($\mathit{gpp}$), ecosystem respiration ($\mathit{resubco}$) & \ref{s:fluxnet}    \\
 		LORA-1-0          & runoff ($\mathit{mrro}$)                                                                & \ref{s:olc}        \\
-		SoilGrids2        & soil carbon ($\mathit{cSoil}$)                                                          & \ref{s:soilgrids2} \\
+		SoilGrids-2-0     & soil carbon ($\mathit{cSoil}$)                                                          & \ref{s:soilgrids2} \\
 		Wang2024          & soil carbon ($\mathit{cSoil}$)                                                          & \ref{s:wang}       \\
 		WangMao-2021(EC)  & soil moisture ($\mathit{mrsol}$)                                                        & \ref{s:ec}         \\
 		WangMao-2021(OLC) & soil moisture ($\mathit{mrsol}$)                                                        & \ref{s:olc}        \\
@@ -304,9 +304,9 @@ The Fluxnet-2015 dataset~\cite{Pastorello_SciData_20200709} consists of measurem
 
 In~\cite{DaviesBarnard_GBC_20200209} the authors create a global estimate of the biological nitrogen fixation by reviewing 300 papers and books and collecting field measurements including location and vegetation type. The authors use these data along with a land cover map to create an approximate global map of the fixation where the uncertainty is defined by the first and third quartile of measurements in a given land cover type.
 
-\subsubsection{SoilGrids2}\label{s:soilgrids2}
+\subsubsection{SoilGrids-2-0}\label{s:soilgrids2}
 
-The SoilGrids2 dataset~\cite{Poggio_SOIL_20210614} uses quantile regression forests to create a regressor for soil carbon ($\mathit{cSoil}$) from 400 global environmental covariates and 240,000 locations with soil carbon data. In contrast to random forests, the quantile regression forest method produces an estimate of quantiles of soil carbon, leading to a natural means of reporting uncertainty. The authors include the 90$^{\mathrm{th}}$ prediction interval as a measure of uncertainty.
+The SoilGrids-2-0 dataset~\cite{Poggio_SOIL_20210614} uses quantile regression forests to create a regressor for soil carbon ($\mathit{cSoil}$) from 400 global environmental covariates and 240,000 locations with soil carbon data. In contrast to random forests, the quantile regression forest method produces an estimate of quantiles of soil carbon, leading to a natural means of reporting uncertainty. The authors include the 90$^{\mathrm{th}}$ prediction interval as a measure of uncertainty.
 
 \subsubsection{Wang2024}\label{s:wang}
 
@@ -357,7 +357,7 @@ From this point of view a good score rather reflects that the reference data has
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=\textwidth]{../figs/cSoil.png}
-	\caption{The impact of uncertainty when comparing SoilGrids2 soil carbon to CESM2. In panel (a) we plot the mean soil carbon along with its uncertainty panel (b). Panel (c) shows the previous bias score based on a relative error given equation~\eqref{e:bias0} and panel (d) the proposed change incorporating reference uncertainty whose relative error is given in equation~\eqref{e:bias}. The new methodology helps focus attention to the high latitudes where the biases are far larger than the reference uncertainty leading to poor bias scores.}\label{f:csoil}
+	\caption{The impact of uncertainty when comparing SoilGrids-2-0 soil carbon to CESM2. In panel (a) we plot the mean soil carbon along with its uncertainty panel (b). Panel (c) shows the previous bias score based on a relative error given equation~\eqref{e:bias0} and panel (d) the proposed change incorporating reference uncertainty whose relative error is given in equation~\eqref{e:bias}. The new methodology helps focus attention to the high latitudes where the biases are far larger than the reference uncertainty leading to poor bias scores.}\label{f:csoil}
 \end{figure}
 %
 \begin{figure}[ht]
@@ -368,7 +368,7 @@ From this point of view a good score rather reflects that the reference data has
 
 Second, for the reference and model data selected, there is no large change in model rankings. We emphasize this by including the Pearson correlation coefficient for each series in the bottom right of the plot as an indication of linearity. Near-ubiquitous strong linearity implies that while scores are different, the inclusion of uncertainty does not dramatically change our notion of the ranking of models. This also suggests that while considering uncertainty is important for prioritizing model developments in regions where we are certain of large errors, we have not been purporting a false picture of performance by having previously ignored it. One notable exception to this observation is the panel showing soil moisture at 0 [m] with the WangMao-2021(OLC) data product where the Pearson correlation coefficient of the bias score is 0.545. In this product the surface uncertainty is quite large leading to substantial increases in the score (0.2 to 0.8). Such widespread large uncertainty appears to impact models differently, however with a spread of scores that remains tight. It could be argued that model performance with and without uncertainty remains similar across all models.
 
-We highlight that not all dataset/variables have been equally affected by our methodological changes. In figure~\ref{f:score}, the closer the point series are to the diagonal, the less affected the scores have been by including uncertainty. Consider the difference in the soil carbon across the SoilGrids2 and Wang2024 panels. The scores of SoilGrids2 are greatly affected by the inclusion of uncertainty. The values shift from 0.3-0.6 to 0.6-1.0. This is due to the uneven sampling of soil carbon data globally, leading to large uncertainty especially in areas where few cores have been extracted. In contrast, the Wang2024 product is a reconstruction over the continental United States and Alaska, where data is comparatively densly available. The resulting uncertainties are lower, which lead to small changes in score with these methodological changes.
+We highlight that not all dataset/variables have been equally affected by our methodological changes. In figure~\ref{f:score}, the closer the point series are to the diagonal, the less affected the scores have been by including uncertainty. Consider the difference in the soil carbon across the SoilGrids-2-0 and Wang2024 panels. The scores of SoilGrids-2-0 are greatly affected by the inclusion of uncertainty. The values shift from 0.3-0.6 to 0.6-1.0. This is due to the uneven sampling of soil carbon data globally, leading to large uncertainty especially in areas where few cores have been extracted. In contrast, the Wang2024 product is a reconstruction over the continental United States and Alaska, where data is comparatively densly available. The resulting uncertainties are lower, which lead to small changes in score with these methodological changes.
 %
 \begin{figure}[ht]
 	\centering
